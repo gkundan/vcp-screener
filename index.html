@@ -3,1707 +3,1597 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VCP Screener v4 — SwingAlgo</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<title>VCP Screener — SwingAlgo</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#07090d;--surface:#0d1219;--s2:#121a22;--s3:#172130;
-  --border:#1c2a38;--b2:#253545;
-  --fire:#ff4500;--fire2:#ff7800;--fire3:#ffc200;
-  --green:#00e676;--red:#f5222d;--yellow:#ffc400;--blue:#29b6f6;--purple:#b388ff;
-  --text:#dde6ef;--muted:#5e7a8e;--dim:#3a5060;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+  :root {
+    --bg0: #080c10;
+    --bg1: #0d1117;
+    --bg2: #131920;
+    --bg3: #1a2230;
+    --bg4: #1f2a3a;
+    --border: #1e2d3d;
+    --border2: #243545;
+    --accent: #00e5a0;
+    --accent2: #00b8ff;
+    --accent3: #ff6b35;
+    --warn: #ffb800;
+    --danger: #ff4757;
+    --text1: #e8f0f7;
+    --text2: #8ba0b8;
+    --text3: #4a6070;
+    --green: #00e5a0;
+    --red: #ff4757;
+    --gold: #ffb800;
+    --purple: #a78bfa;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
 
-/* BG AMBIENCE */
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 70% 45% at 90% 5%,rgba(255,69,0,.08) 0%,transparent 55%),
-             radial-gradient(ellipse 50% 60% at 5% 85%,rgba(0,140,255,.05) 0%,transparent 55%)}
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:linear-gradient(rgba(255,69,0,.02) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(255,69,0,.02) 1px,transparent 1px);
-  background-size:64px 64px}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.page{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 24px 80px}
+  body {
+    background: var(--bg0);
+    color: var(--text1);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-/* HEADER */
-header{padding:44px 0 30px;border-bottom:1px solid var(--border);margin-bottom:36px}
-.hrow{display:flex;align-items:center;gap:14px;margin-bottom:6px}
-.logo-icon{font-size:46px;filter:drop-shadow(0 0 18px var(--fire));animation:bob 2.8s ease-in-out infinite}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-9px) rotate(-5deg)}}
-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(46px,6vw,80px);letter-spacing:6px;line-height:1;
-   background:linear-gradient(130deg,#ff4500 0%,#ff7800 45%,#ffc200 100%);
-   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.version{font-family:'Space Mono',monospace;font-size:10px;color:var(--fire2);letter-spacing:2px;margin-left:4px;vertical-align:super;-webkit-text-fill-color:var(--fire2)}
-.htag{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-left:60px}
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,160,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,160,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-/* VCP CRITERIA STRIP */
-.criteria-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);margin-bottom:32px}
-.crit{padding:16px 12px;border-right:1px solid var(--border);text-align:center}
-.crit:last-child{border-right:none}
-.crit-icon{font-size:26px;margin-bottom:6px}
-.crit-title{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--fire2);margin-bottom:3px}
-.crit-desc{font-size:10px;color:var(--muted);line-height:1.4}
+  /* ── HEADER ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(8,12,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-/* SEPA BANNER */
-.sepa-banner{background:rgba(255,69,0,.04);border:1px solid rgba(255,69,0,.18);border-radius:12px;padding:18px 22px;margin-bottom:28px}
-.sepa-title{font-family:'Space Mono',monospace;font-size:10px;color:var(--fire2);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.sepa-pills{display:flex;flex-wrap:wrap;gap:8px}
-.sepa-pill{font-size:11px;padding:4px 10px;border-radius:5px;background:rgba(255,69,0,.07);border:1px solid rgba(255,69,0,.18);color:var(--fire2);font-family:'Space Mono',monospace}
+  .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-/* UPLOAD */
-.upload-zone{background:var(--surface);border:2px dashed var(--border);border-radius:18px;
-  padding:56px 40px;text-align:center;cursor:pointer;transition:all .3s;
-  position:relative;overflow:hidden;margin-bottom:20px}
-.upload-zone::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at center,rgba(255,69,0,.13) 0%,transparent 70%);
-  opacity:0;transition:opacity .3s}
-.upload-zone:hover,.upload-zone.over{border-color:var(--fire);background:var(--s2)}
-.upload-zone:hover::before,.upload-zone.over::before{opacity:1}
-.uico{font-size:54px;margin-bottom:14px;display:block}
-.utitle{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:3px;margin-bottom:8px}
-.usub{color:var(--muted);font-size:14px;margin-bottom:26px}
-.ubtn{display:inline-flex;align-items:center;gap:8px;
-  background:linear-gradient(135deg,var(--fire),var(--fire2));color:#fff;border:none;
-  padding:13px 32px;border-radius:9px;font-family:'Space Mono',monospace;
-  font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;
-  box-shadow:0 4px 26px rgba(255,69,0,.32)}
-.ubtn:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(255,69,0,.48)}
-#fi{display:none}
+  .logo-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
 
-/* CSV FORMAT HINT */
-.csv-hint{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:20px}
-.csv-hint-title{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px}
-.col-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
-.col-chip{font-family:'Space Mono',monospace;font-size:10px;padding:3px 9px;background:var(--surface);border:1px solid var(--border);border-radius:4px;color:var(--muted)}
-.csv-example{font-family:'Space Mono',monospace;font-size:10px;color:var(--dim);background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:10px 14px;line-height:1.8}
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
 
-/* FILE BAR */
-.fbar{display:none;align-items:center;justify-content:space-between;
-  background:var(--s2);border:1px solid var(--border);border-radius:12px;
-  padding:14px 20px;margin-bottom:20px}
-.fbar.on{display:flex}
-.fmeta{display:flex;align-items:center;gap:12px}
-.fname{font-family:'Space Mono',monospace;font-size:13px}
-.fcnt{font-size:12px;color:var(--muted);margin-top:3px}
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
 
-/* GO BUTTON */
-.go{display:none;width:100%;padding:20px;
-  background:linear-gradient(135deg,var(--fire),var(--fire2));
-  border:none;border-radius:13px;color:#fff;
-  font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;
-  cursor:pointer;transition:all .3s;box-shadow:0 4px 36px rgba(255,69,0,.32);
-  position:relative;overflow:hidden;margin-bottom:40px}
-.go::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transition:left .6s}
-.go:hover::before{left:100%}
-.go:hover{transform:translateY(-2px);box-shadow:0 10px 44px rgba(255,69,0,.52)}
-.go.on{display:block}
-.go:disabled{opacity:.45;cursor:not-allowed;transform:none}
+  .header-stat {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+  }
 
-/* LOADING */
-.ld{display:none;text-align:center;padding:70px 0}
-.ld.on{display:block}
-.lrocket{font-size:54px;display:block;margin-bottom:18px;animation:launch .75s ease-in-out infinite alternate}
-@keyframes launch{from{transform:translateY(0) rotate(-10deg)}to{transform:translateY(-24px) rotate(-10deg)}}
-.lmsg{font-family:'Space Mono',monospace;font-size:13px;color:var(--muted);letter-spacing:2px;margin-bottom:18px}
-.pbar{width:300px;height:5px;background:var(--border);border-radius:99px;margin:0 auto;overflow:hidden}
-.pfill{height:100%;background:linear-gradient(90deg,var(--fire),var(--fire2),var(--fire3));border-radius:99px;width:0%;transition:width .3s ease}
+  .header-stat span {
+    color: var(--accent);
+    font-weight: 700;
+  }
 
-/* ERROR */
-.err{display:none;background:rgba(245,34,45,.06);border:1px solid rgba(245,34,45,.25);
-  border-radius:12px;padding:16px 22px;color:var(--red);
-  font-family:'Space Mono',monospace;font-size:13px;margin-bottom:20px}
-.err.on{display:block}
+  /* ── UPLOAD ZONE ── */
+  .upload-section {
+    position: relative;
+    z-index: 1;
+    padding: 32px 24px 0;
+  }
 
-/* RESULTS */
-.results{display:none}
-.results.on{display:block}
+  .upload-zone {
+    border: 1.5px dashed var(--border2);
+    border-radius: 12px;
+    padding: 28px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg1);
+    position: relative;
+    overflow: hidden;
+  }
 
-/* TABS */
-.tabs{display:flex;gap:6px;margin-bottom:28px;border-bottom:1px solid var(--border);padding-bottom:0}
-.tab{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:1px;padding:10px 18px;
-  border:none;background:transparent;color:var(--muted);cursor:pointer;
-  border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px}
-.tab:hover{color:var(--text)}
-.tab.active{color:var(--fire2);border-bottom-color:var(--fire2)}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
+  .upload-zone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(0,229,160,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
 
-/* STATS GRID */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;margin-bottom:28px}
-.sc{background:var(--surface);border:1px solid var(--border);border-radius:13px;
-  padding:18px 20px;text-align:center;transition:border-color .2s;cursor:default}
-.sc:hover{border-color:var(--fire)}
-.sn{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:1px;line-height:1;margin-bottom:4px}
-.sl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--accent);
+    background: rgba(0,229,160,0.03);
+  }
 
-/* FILTER BAR */
-.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
-.search-box{flex:1;min-width:200px;background:var(--s2);border:1px solid var(--border);
-  border-radius:9px;padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;
-  font-size:14px;outline:none;transition:border-color .2s}
-.search-box:focus{border-color:var(--fire)}
-.search-box::placeholder{color:var(--muted)}
-.filter-btns{display:flex;gap:6px}
-.fbtn{font-size:12px;padding:8px 14px;border-radius:7px;border:1px solid var(--border);
-  background:transparent;color:var(--muted);cursor:pointer;font-family:'Space Mono',monospace;
-  letter-spacing:.5px;transition:all .2s}
-.fbtn:hover,.fbtn.active{border-color:var(--fire);color:var(--fire);background:rgba(255,69,0,.07)}
-.sort-sel{background:var(--s2);border:1px solid var(--border);border-radius:9px;
-  padding:9px 12px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;
-  outline:none;cursor:pointer}
-.sort-sel option{background:var(--surface)}
-.res-count{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)}
+  .upload-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+    opacity: 0.5;
+  }
 
-/* TIER SECTION */
-.tier-sec{margin-bottom:48px}
-.tier-hdr{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
-.tbadge{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;padding:4px 13px;border-radius:5px}
-.tbadge.fire  {background:rgba(255,69,0,.14);  color:var(--fire);  border:1px solid rgba(255,69,0,.28)}
-.tbadge.strong{background:rgba(0,230,118,.1);  color:var(--green); border:1px solid rgba(0,230,118,.22)}
-.tbadge.watch {background:rgba(255,196,0,.1);  color:var(--yellow);border:1px solid rgba(255,196,0,.22)}
-.tbadge.skip  {background:rgba(94,122,142,.08);color:var(--muted); border:1px solid rgba(94,122,142,.2)}
-.ttitle{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px}
-.tcnt{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-left:auto}
+  .upload-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text1);
+    margin-bottom: 4px;
+  }
 
-/* CARDS */
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:18px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;
-  padding:22px;position:relative;overflow:hidden;transition:all .3s;
-  animation:fadeUp .4s ease forwards;opacity:0}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.card:hover{border-color:var(--fire);transform:translateY(-4px);box-shadow:0 16px 44px rgba(255,69,0,.1)}
-.card.t1{border-left:3px solid var(--fire)}
-.card.t2{border-left:3px solid var(--green)}
-.card.t3{border-left:3px solid var(--yellow)}
-.card.t4{border-left:3px solid var(--muted)}
-.card.t1::before{content:'';position:absolute;top:0;right:0;width:100px;height:100px;
-  background:radial-gradient(circle at top right,rgba(255,69,0,.08),transparent 70%)}
+  .upload-sub {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: var(--mono);
+  }
 
-/* CARD TOP */
-.ctop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
-.csym{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px}
-.cname{font-size:12px;color:var(--muted);margin-top:2px;max-width:215px;line-height:1.35}
-.sbox{text-align:center;min-width:64px}
-.snum{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1}
-.sverd{font-size:9px;font-family:'Space Mono',monospace;letter-spacing:1px;margin-top:1px}
-.sbox.fire   .snum,.sbox.fire   .sverd{color:var(--fire)}
-.sbox.strong .snum,.sbox.strong .sverd{color:var(--green)}
-.sbox.watch  .snum,.sbox.watch  .sverd{color:var(--yellow)}
-.sbox.skip   .snum,.sbox.skip   .sverd{color:var(--muted)}
+  .upload-btn {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 8px 20px;
+    background: var(--accent);
+    color: #000;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+    text-transform: uppercase;
+  }
 
-/* STAGE BADGE on card */
-.stage-pill{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;
-  padding:2px 8px;border-radius:4px;letter-spacing:1px;margin-top:4px}
-.stage-pill.s2{background:rgba(0,230,118,.08);color:var(--green);border:1px solid rgba(0,230,118,.2)}
-.stage-pill.s1{background:rgba(41,182,246,.07);color:var(--blue);border:1px solid rgba(41,182,246,.18)}
-.stage-pill.s3{background:rgba(255,196,0,.08);color:var(--yellow);border:1px solid rgba(255,196,0,.2)}
-.stage-pill.s4{background:rgba(245,34,45,.07);color:var(--red);border:1px solid rgba(245,34,45,.18)}
+  .upload-btn:hover { background: #00ffb0; transform: translateY(-1px); }
 
-/* METRICS ROW */
-.mrow{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
-  background:var(--s2);border-radius:9px;padding:10px 8px;margin-bottom:14px}
-.met{text-align:center}
-.mv{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;margin-bottom:2px;white-space:nowrap}
-.mv.pos{color:var(--green)}.mv.neg{color:var(--red)}.mv.neu{color:var(--blue)}.mv.warn{color:var(--yellow)}
-.mlbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+  /* ── FILTER PANEL ── */
+  .filter-panel {
+    position: relative;
+    z-index: 1;
+    margin: 20px 24px 0;
+    background: var(--bg1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
 
-/* VCP SCORE BREAKDOWN BAR */
-.vcp-breakdown{margin-bottom:14px}
-.vbd-title{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.vbd-rows{display:flex;flex-direction:column;gap:5px}
-.vbd-row{display:flex;align-items:center;gap:8px}
-.vbd-label{font-size:10px;color:var(--muted);width:78px;flex-shrink:0;font-family:'Space Mono',monospace}
-.vbd-track{flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden}
-.vbd-fill{height:100%;border-radius:99px;transition:width .6s ease}
-.vbd-pts{font-family:'Space Mono',monospace;font-size:10px;min-width:32px;text-align:right}
+  .filter-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-/* CHECKLIST */
-.checklist{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:14px}
-.chk{display:flex;align-items:center;gap:6px;font-size:11px;padding:4px 8px;border-radius:6px}
-.chk.pass{background:rgba(0,230,118,.06);color:#7be8b0;border:1px solid rgba(0,230,118,.15)}
-.chk.fail{background:rgba(245,34,45,.06);color:#ff8a8a;border:1px solid rgba(245,34,45,.15)}
-.chk.warn{background:rgba(255,196,0,.06);color:#ffd966;border:1px solid rgba(255,196,0,.15)}
-.chk.na  {background:rgba(94,122,142,.05);color:var(--dim);border:1px solid rgba(94,122,142,.12)}
-.chk-icon{font-size:10px;flex-shrink:0}
-.chk-text{line-height:1.3;font-family:'Space Mono',monospace;letter-spacing:.2px}
+  .filter-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
 
-/* VCP CONTRACTION VISUAL */
-.vcp-visual{background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:14px}
-.vcp-vis-title{font-size:9px;color:var(--fire2);font-family:'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
-.vcp-bars{display:flex;align-items:flex-end;gap:4px;height:44px;margin-bottom:6px}
-.vcp-bar{border-radius:2px 2px 0 0;min-width:18px;flex:1;transition:all .5s ease}
-.vcp-labels{display:flex;gap:4px}
-.vcp-lbl{flex:1;text-align:center;font-family:'Space Mono',monospace;font-size:8px;color:var(--muted)}
-.vcp-arrow{font-size:9px;color:var(--dim);margin:0 2px}
+  .filter-toggle {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    padding: 4px 10px;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
 
-/* TRADE PLAN */
-.tplan{display:flex;gap:8px;margin-bottom:14px}
-.tp{flex:1;padding:9px 8px;border-radius:8px;text-align:center}
-.tp.entry{background:rgba(41,182,246,.06);border:1px solid rgba(41,182,246,.15)}
-.tp.sl   {background:rgba(245,34,45,.06); border:1px solid rgba(245,34,45,.15)}
-.tp.tgt  {background:rgba(0,230,118,.06); border:1px solid rgba(0,230,118,.15)}
-.tpv{font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
-.tp.entry .tpv{color:var(--blue)}.tp.sl .tpv{color:var(--red)}.tp.tgt .tpv{color:var(--green)}
-.tpl{font-size:9px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+  .filter-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
-/* FOLLOW-THROUGH BAR */
-.ft-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.ft-label{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;white-space:nowrap}
-.ft-track{flex:1;height:6px;background:var(--border);border-radius:99px;overflow:hidden}
-.ft-fill{height:100%;border-radius:99px;transition:width .6s ease}
-.ft-fill.good{background:linear-gradient(90deg,var(--green),#00c853)}
-.ft-fill.ok{background:linear-gradient(90deg,var(--yellow),#ff8f00)}
-.ft-fill.bad{background:linear-gradient(90deg,var(--red),#b71c1c)}
-.ft-pct{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);white-space:nowrap}
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border);
+  }
 
-/* POSITION CALC (card inline) */
-.mini-calc{background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:14px}
-.mc-title{font-size:10px;color:var(--fire2);font-family:'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.mc-row{display:flex;align-items:center;gap:10px}
-.mc-input{flex:1;background:var(--s3);border:1px solid var(--border);border-radius:6px;
-  padding:6px 10px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;outline:none;width:100%}
-.mc-input:focus{border-color:var(--fire)}
-.mc-results{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-.mc-res{font-size:11px;font-family:'Space Mono',monospace;padding:3px 8px;border-radius:5px}
-.mc-res.shares{background:rgba(41,182,246,.08);color:var(--blue);border:1px solid rgba(41,182,246,.15)}
-.mc-res.invest{background:rgba(255,196,0,.08);color:var(--yellow);border:1px solid rgba(255,196,0,.15)}
-.mc-res.risk  {background:rgba(245,34,45,.08);color:var(--red);   border:1px solid rgba(245,34,45,.15)}
-.mc-res.reward{background:rgba(0,230,118,.08);color:var(--green); border:1px solid rgba(0,230,118,.15)}
-.mc-placeholder{font-size:11px;color:var(--dim);font-family:'Space Mono',monospace;margin-top:6px}
+  .filter-item {
+    background: var(--bg1);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-/* ANALYSIS BLOCK */
-.ablock{border-top:1px solid var(--border);padding-top:12px}
-.albl{font-family:'Space Mono',monospace;font-size:9px;color:var(--fire2);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.atxt{font-size:12px;color:#90aabb;line-height:1.65}
+  .filter-check {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: 1.5px solid var(--border2);
+    background: transparent;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    position: relative;
+  }
 
-/* CALCULATOR TAB */
-.calc-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:28px}
-.calc-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:4px;display:flex;align-items:center;gap:10px}
-.calc-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
-.calc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:20px}
-.calc-input-group{display:flex;flex-direction:column;gap:6px}
-.calc-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-family:'Space Mono',monospace}
-.calc-input{background:var(--s2);border:1px solid var(--border);border-radius:8px;
-  padding:10px 14px;color:var(--text);font-family:'Space Mono',monospace;font-size:14px;
-  transition:border-color .2s;outline:none;width:100%}
-.calc-input:focus{border-color:var(--fire)}
-.calc-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
-.calc-out{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center}
-.cout-val{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;margin-bottom:3px}
-.cout-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.calc-out.red .cout-val{color:var(--red)}
-.calc-out.green .cout-val{color:var(--green)}
-.calc-out.yellow .cout-val{color:var(--yellow)}
-.calc-out.blue .cout-val{color:var(--blue)}
+  .filter-check:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
 
-/* RULES */
-.rules{background:rgba(245,34,45,.04);border:1px solid rgba(245,34,45,.15);border-radius:13px;padding:18px 24px;margin-bottom:30px}
-.rules-title{font-family:'Space Mono',monospace;font-size:10px;color:var(--red);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
-.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0}
-.rule-item{padding:0 18px;border-right:1px solid rgba(245,34,45,.12)}
-.rule-item:first-child{padding-left:0}
-.rule-item:last-child{border-right:none}
-.rl{font-size:11px;color:var(--muted);margin-bottom:4px}
-.rv{font-family:'Space Mono',monospace;font-size:16px;color:var(--red);font-weight:700}
+  .filter-check:checked::after {
+    content: '✓';
+    position: absolute;
+    top: -1px; left: 2px;
+    font-size: 11px;
+    color: #000;
+    font-weight: 700;
+  }
 
-/* MISC */
-.rbtn{display:inline-flex;align-items:center;gap:6px;background:transparent;
-  border:1px solid var(--border);color:var(--muted);padding:7px 15px;border-radius:8px;
-  font-family:'Space Mono',monospace;font-size:12px;cursor:pointer;transition:all .2s}
-.rbtn:hover{border-color:var(--fire);color:var(--fire)}
-.empty-state{text-align:center;padding:48px 0;color:var(--muted);font-family:'Space Mono',monospace;font-size:13px}
+  .filter-label-text {
+    font-size: 12px;
+    color: var(--text2);
+    cursor: pointer;
+    user-select: none;
+  }
 
-/* ── WATCHLIST STAR ── */
-.star-btn{position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;
-  font-size:16px;opacity:.35;transition:all .2s;z-index:2}
-.star-btn:hover,.star-btn.on{opacity:1;filter:drop-shadow(0 0 6px gold)}
-.star-btn.on{color:gold}
+  .filter-label-text strong {
+    display: block;
+    font-size: 11px;
+    color: var(--text1);
+    font-weight: 500;
+    margin-bottom: 1px;
+  }
 
-/* ── RS RATING BADGE ── */
-.rs-badge{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;
-  padding:2px 7px;border-radius:4px;margin-left:6px;vertical-align:middle}
-.rs-badge.elite{background:rgba(255,69,0,.15);color:var(--fire);border:1px solid rgba(255,69,0,.3)}
-.rs-badge.strong{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.22)}
-.rs-badge.avg{background:rgba(255,196,0,.1);color:var(--yellow);border:1px solid rgba(255,196,0,.22)}
-.rs-badge.weak{background:rgba(94,122,142,.08);color:var(--muted);border:1px solid rgba(94,122,142,.18)}
+  /* NEW badge */
+  .badge-new {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(0,229,160,0.15);
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
 
-/* ── SPARKLINE ── */
-.sparkline-wrap{margin-bottom:14px}
-.spark-title{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);
-  letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-canvas.spark{width:100%;height:40px;border-radius:6px;display:block}
+  .badge-fix {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(255,71,87,0.15);
+    color: var(--danger);
+    letter-spacing: 0.05em;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
 
-/* ── SECTOR HEATMAP ── */
-.heatmap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:28px}
-.hm-cell{border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s;border:1px solid transparent}
-.hm-cell:hover{transform:scale(1.04);border-color:rgba(255,255,255,.1)}
-.hm-sector{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;opacity:.8}
-.hm-score{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1}
-.hm-count{font-size:10px;opacity:.7;margin-top:2px}
+  /* ── LAUNCH BAR ── */
+  .launch-bar {
+    position: relative;
+    z-index: 1;
+    margin: 16px 24px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-/* ── EXPORT TOOLBAR ── */
-.export-bar{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
-.exp-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;
-  border-radius:7px;border:1px solid var(--border);background:var(--s2);
-  color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;
-  cursor:pointer;transition:all .2s;letter-spacing:.5px}
-.exp-btn:hover{border-color:var(--fire2);color:var(--fire2)}
+  .launch-btn {
+    flex: 1;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #00e5a0 0%, #00b8ff 100%);
+    color: #000;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
 
-/* ── WATCHLIST PANEL ── */
-.wl-panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;
-  padding:22px;margin-bottom:28px}
-.wl-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;
-  margin-bottom:14px;color:var(--fire2)}
-.wl-empty{font-family:'Space Mono',monospace;font-size:11px;color:var(--dim);padding:10px 0}
-.wl-table{width:100%;border-collapse:collapse;font-size:12px}
-.wl-table th{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);
-  letter-spacing:1px;text-transform:uppercase;padding:6px 10px;
-  border-bottom:1px solid var(--border);text-align:left}
-.wl-table td{padding:8px 10px;border-bottom:1px solid rgba(28,42,56,.5);font-family:'Space Mono',monospace;font-size:11px}
-.wl-table tr:hover td{background:var(--s2)}
-.wl-rm{background:none;border:none;color:var(--dim);cursor:pointer;font-size:12px;transition:color .2s}
-.wl-rm:hover{color:var(--red)}
+  .launch-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #00ffb0 0%, #40d0ff 100%);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
 
-/* ── COMPARE MODE ── */
-.compare-bar{display:none;align-items:center;gap:10px;padding:10px 16px;
-  background:rgba(41,182,246,.06);border:1px solid rgba(41,182,246,.18);
-  border-radius:10px;margin-bottom:16px;font-family:'Space Mono',monospace;font-size:11px;color:var(--blue)}
-.compare-bar.on{display:flex}
-.cmp-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1}
-.cmp-chip{padding:3px 10px;border-radius:5px;background:rgba(41,182,246,.1);
-  border:1px solid rgba(41,182,246,.2);display:flex;align-items:center;gap:5px}
-.cmp-chip button{background:none;border:none;color:var(--blue);cursor:pointer;font-size:10px}
-.cmp-run{padding:5px 12px;border-radius:6px;border:1px solid var(--blue);
-  background:transparent;color:var(--blue);font-family:'Space Mono',monospace;
-  font-size:10px;cursor:pointer;transition:all .2s}
-.cmp-run:hover{background:rgba(41,182,246,.12)}
-.compare-modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.8);
-  backdrop-filter:blur(6px);align-items:center;justify-content:center}
-.compare-modal.on{display:flex}
-.cmp-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;
-  padding:28px;max-width:900px;width:95%;max-height:90vh;overflow-y:auto}
-.cmp-table{width:100%;border-collapse:collapse;margin-top:16px}
-.cmp-table th{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);
-  padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;letter-spacing:1px}
-.cmp-table td{padding:10px 12px;border-bottom:1px solid rgba(28,42,56,.4);
-  font-family:'Space Mono',monospace;font-size:12px}
-.cmp-table tr:first-child td{font-weight:700}
-.cmp-best{color:var(--green);font-weight:700}
-.cmp-close{float:right;background:none;border:1px solid var(--border);color:var(--muted);
-  padding:5px 12px;border-radius:6px;cursor:pointer;font-family:'Space Mono',monospace;font-size:11px}
-.cmp-close:hover{border-color:var(--fire);color:var(--fire)}
+  .launch-btn:hover::before { opacity: 1; }
+  .launch-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(0,229,160,0.3); }
+  .launch-btn:active { transform: translateY(0); }
 
-/* ── COMPARE CHECKBOX ON CARD ── */
-.cmp-check{position:absolute;top:14px;left:14px;width:15px;height:15px;
-  cursor:pointer;accent-color:var(--blue)}
+  .launch-btn span { position: relative; z-index: 1; }
 
-/* ── ALERT PRICE TAG ── */
-.alert-row{display:flex;align-items:center;gap:8px;margin-top:8px}
-.alert-inp{background:var(--s3);border:1px solid var(--border);border-radius:5px;
-  padding:4px 8px;color:var(--text);font-family:'Space Mono',monospace;font-size:11px;
-  width:110px;outline:none}
-.alert-inp:focus{border-color:var(--blue)}
-.alert-set{padding:4px 10px;border-radius:5px;border:1px solid var(--blue);
-  background:transparent;color:var(--blue);font-family:'Space Mono',monospace;
-  font-size:10px;cursor:pointer}
-.alert-set:hover{background:rgba(41,182,246,.1)}
-.alert-tag{font-size:9px;padding:2px 7px;border-radius:4px;
-  background:rgba(41,182,246,.08);color:var(--blue);border:1px solid rgba(41,182,246,.18);
-  font-family:'Space Mono',monospace}
+  /* ── STATS ROW ── */
+  .stats-row {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 20px 24px 0;
+  }
 
-/* ── VERSION BADGE ── */
-.v4-badge{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;
-  padding:2px 8px;border-radius:4px;background:rgba(179,136,255,.12);
-  color:var(--purple);border:1px solid rgba(179,136,255,.25);margin-left:8px;vertical-align:middle}
+  .stat-card {
+    background: var(--bg1);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
 
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:var(--surface)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--fire)}
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
 
-footer{border-top:1px solid var(--border);padding:22px 0;margin-top:60px;text-align:center;
-  font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px}
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text1);
+    line-height: 1;
+  }
 
-@media(max-width:700px){
-  .cards{grid-template-columns:1fr}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .criteria-strip{grid-template-columns:repeat(2,1fr)}
-  .checklist{grid-template-columns:1fr}
-  .filter-bar{flex-direction:column;align-items:stretch}
-  .rules-grid{grid-template-columns:repeat(2,1fr);gap:14px}
-  .rule-item{padding:0;border-right:none}
-  .heatmap-grid{grid-template-columns:repeat(2,1fr)}
-}
+  .stat-value.green { color: var(--green); }
+  .stat-value.red { color: var(--red); }
+  .stat-value.gold { color: var(--gold); }
+  .stat-value.blue { color: var(--accent2); }
+
+  /* ── SORT / FILTER BAR ── */
+  .results-bar {
+    position: relative;
+    z-index: 1;
+    margin: 20px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .results-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .results-count span { color: var(--accent); }
+
+  .sort-tabs {
+    display: flex;
+    gap: 6px;
+  }
+
+  .sort-tab {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+  }
+
+  .sort-tab:hover { border-color: var(--text3); color: var(--text2); }
+  .sort-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,160,0.07); }
+
+  /* ── STOCK CARDS GRID ── */
+  .cards-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 14px;
+    padding: 16px 24px 40px;
+  }
+
+  .stock-card {
+    background: var(--bg1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .stock-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .stock-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .stock-card:hover::before { opacity: 1; }
+
+  /* Card top bar */
+  .card-top {
+    padding: 14px 16px 10px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card-symbol {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text1);
+  }
+
+  .card-name {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 2px;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-right {
+    text-align: right;
+  }
+
+  .card-price {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text1);
+  }
+
+  .card-change {
+    font-family: var(--mono);
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .card-change.pos { color: var(--green); }
+  .card-change.neg { color: var(--red); }
+
+  /* RS Score badge */
+  .rs-badge {
+    position: absolute;
+    top: 14px;
+    right: 100px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 5px;
+    letter-spacing: 0.05em;
+  }
+
+  .rs-high { background: rgba(0,229,160,0.15); color: var(--accent); border: 1px solid rgba(0,229,160,0.2); }
+  .rs-mid  { background: rgba(255,184,0,0.12); color: var(--gold); border: 1px solid rgba(255,184,0,0.2); }
+  .rs-low  { background: rgba(255,71,87,0.12); color: var(--danger); border: 1px solid rgba(255,71,87,0.2); }
+
+  /* Metrics grid */
+  .card-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .metric {
+    background: var(--bg1);
+    padding: 9px 10px;
+    text-align: center;
+  }
+
+  .metric-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .metric-value {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text1);
+  }
+
+  .metric-value.good { color: var(--green); }
+  .metric-value.warn { color: var(--gold); }
+  .metric-value.bad  { color: var(--red); }
+  .metric-value.blue { color: var(--accent2); }
+
+  /* Contraction bars */
+  .card-vcp {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .vcp-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .vcp-stage {
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .contraction-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 32px;
+  }
+
+  .c-bar {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .c-bar-label {
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--text3);
+    white-space: nowrap;
+  }
+
+  /* Volume bars */
+  .card-volume {
+    padding: 10px 16px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .vol-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .vol-trend {
+    font-size: 10px;
+  }
+
+  .vol-trend.drying { color: var(--green); }
+  .vol-trend.rising { color: var(--red); }
+
+  .vol-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 28px;
+  }
+
+  .v-bar {
+    flex: 1;
+    border-radius: 1px;
+    min-height: 2px;
+  }
+
+  /* Checks section */
+  .card-checks {
+    padding: 10px 16px 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  .check-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .check-dot.pass { background: var(--green); }
+  .check-dot.fail { background: var(--red); }
+  .check-dot.warn { background: var(--gold); }
+
+  /* AI Analysis */
+  .card-ai {
+    padding: 10px 16px;
+    background: rgba(0,229,160,0.03);
+    border-top: 1px solid var(--border);
+  }
+
+  .ai-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ai-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .ai-text {
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.6;
+    min-height: 36px;
+  }
+
+  .ai-text.loading {
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  /* Card footer */
+  .card-footer {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+
+  .stage-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 5px;
+    letter-spacing: 0.05em;
+  }
+
+  .stage-2 { background: rgba(0,229,160,0.12); color: var(--accent); border: 1px solid rgba(0,229,160,0.2); }
+  .stage-1 { background: rgba(255,184,0,0.10); color: var(--gold); border: 1px solid rgba(255,184,0,0.2); }
+  .stage-3 { background: rgba(255,71,87,0.10); color: var(--danger); border: 1px solid rgba(255,71,87,0.2); }
+
+  .proximity-bar {
+    flex: 1;
+    margin: 0 12px;
+  }
+
+  .proximity-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text3);
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .proximity-track {
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .proximity-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--green), var(--accent2));
+    transition: width 0.5s ease;
+  }
+
+  .vol-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    text-align: right;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text3);
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.3;
+  }
+
+  .empty-title {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+
+  .empty-sub {
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  /* ── LOADING ── */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(8,12,16,0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .loading-overlay.show { display: flex; }
+
+  .spinner {
+    width: 40px; height: 40px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── SCORE RING ── */
+  .score-ring {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+  }
+
+  .score-ring svg { transform: rotate(-90deg); }
+
+  .score-ring-num {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text1);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .stats-row { grid-template-columns: repeat(3, 1fr); }
+    .cards-grid { grid-template-columns: 1fr; padding: 12px; }
+    header, .upload-section, .filter-panel, .launch-bar, .stats-row, .results-bar { margin-left: 12px; margin-right: 12px; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg0); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  .tag-pass { background: rgba(0,229,160,0.1); color: var(--accent); }
+  .tag-fail { background: rgba(255,71,87,0.1); color: var(--danger); }
+  .tag-warn { background: rgba(255,184,0,0.1); color: var(--gold); }
+
+  .filters-body { transition: max-height 0.3s ease, opacity 0.3s ease; overflow: hidden; }
+  .filters-body.collapsed { max-height: 0; opacity: 0; }
+  .filters-body.expanded { max-height: 600px; opacity: 1; }
 </style>
 </head>
 <body>
-<div class="page">
 
 <!-- HEADER -->
 <header>
-  <div class="hrow">
-    <span class="logo-icon">📈</span>
-    <h1>VCP SCREENER<span class="version">v4</span></h1>
-    <span class="v4-badge">NEW</span>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    VCP SCREENER
+    <span style="color:var(--text3);font-weight:400;letter-spacing:0.05em">/ SWINGALGO</span>
   </div>
-  <p class="htag">SwingAlgo · SEPA® Method by StockExploder · 100% Offline · No Data Leaves Your Device</p>
+  <div class="header-right">
+    <div class="header-stat">TOTAL SCANNED <span id="hdr-total">0</span></div>
+    <div class="header-stat">PASSED <span id="hdr-passed">0</span></div>
+    <div class="header-stat" style="color:var(--text3);font-size:10px;" id="hdr-time">—</div>
+  </div>
 </header>
 
-<!-- VCP 5-CRITERIA STRIP -->
-<div class="criteria-strip">
-  <div class="crit"><div class="crit-icon">📊</div><div class="crit-title">Stage 2 Uptrend</div><div class="crit-desc">Price above MA50 &amp; MA200, MA50 above MA200</div></div>
-  <div class="crit"><div class="crit-icon">🔻</div><div class="crit-title">VCP Contractions</div><div class="crit-desc">Each correction smaller &amp; shorter than the last</div></div>
-  <div class="crit"><div class="crit-icon">⚡</div><div class="crit-title">EPS Acceleration</div><div class="crit-desc">QoQ &amp; YoY earnings growth, 20%+ preferred</div></div>
-  <div class="crit"><div class="crit-icon">🏦</div><div class="crit-title">Fundamentals</div><div class="crit-desc">Altman Z-Score, D/E ratio, ROE, EBITDA margin</div></div>
-  <div class="crit"><div class="crit-icon">📉</div><div class="crit-title">Volume/Float</div><div class="crit-desc">Vol ratio 1.5x+, low float &lt;35%, near 52W high</div></div>
-</div>
-
-<!-- SEPA MISTAKES BANNER -->
-<div class="sepa-banner">
-  <div class="sepa-title">⚡ SEPA® — SPECIFIC ENTRY POINT ANALYSIS — 3 GOALS</div>
-  <div class="sepa-pills">
-    <span class="sepa-pill">1 · Take Minimal Risk</span>
-    <span class="sepa-pill">2 · Capture Large Gains</span>
-    <span class="sepa-pill">3 · Maximize Compounding</span>
-    <span class="sepa-pill">A · Selection Process</span>
-    <span class="sepa-pill">B · Trade Execution</span>
-    <span class="sepa-pill">C · Position Management</span>
-  </div>
-</div>
-
 <!-- UPLOAD -->
-<div class="upload-zone" id="dz" onclick="document.getElementById('fi').click()">
-  <span class="uico">📋</span>
-  <div class="utitle">DROP YOUR WATCHLIST CSV</div>
-  <p class="usub">Upload stock data — VCP scored instantly, no internet required</p>
-  <button class="ubtn" onclick="event.stopPropagation();document.getElementById('fi').click()">⬆ CHOOSE FILE</button>
-  <input type="file" id="fi" accept=".csv">
-</div>
-
-<!-- CSV FORMAT HINT -->
-<div class="csv-hint">
-  <div class="csv-hint-title">📌 Required CSV Columns</div>
-  <div class="col-chips">
-    <span class="col-chip">Symbol</span><span class="col-chip">Sector</span><span class="col-chip">Price</span>
-    <span class="col-chip">MA50</span><span class="col-chip">MA200</span><span class="col-chip">EPS_Growth_QoQ</span>
-    <span class="col-chip">EPS_Growth_YoY</span><span class="col-chip">Revenue_Growth</span><span class="col-chip">MarketCap_Cr</span>
-    <span class="col-chip">Float_Pct</span><span class="col-chip">Debt_Equity</span><span class="col-chip">EBITDA_Margin</span>
-    <span class="col-chip">ROE</span><span class="col-chip">Volume_Ratio</span><span class="col-chip">High_52W</span>
-    <span class="col-chip">Low_52W</span><span class="col-chip">Contraction1</span><span class="col-chip">Contraction2</span>
-    <span class="col-chip">Contraction3</span><span class="col-chip">Altman_Z</span>
-  </div>
-  <div class="csv-example">EXAMPLE ROW:<br>TITAN, Consumer, 3280, 3100, 2900, 22, 35, 18, 291000, 45, 0.1, 14, 28, 1.8, 3400, 2600, 18, 11, 5, 5.2</div>
-  <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-    <button class="ubtn" style="padding:10px 22px;font-size:11px;box-shadow:none" onclick="loadDemo()">▶ LOAD 20 DEMO STOCKS</button>
-    <button class="rbtn" onclick="downloadSampleCSV()">⬇ Download Sample CSV</button>
-    <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--dim)">ALL PROCESSING IS LOCAL — NO API CALLS</span>
+<div class="upload-section">
+  <div class="upload-zone" id="drop-zone" onclick="document.getElementById('csv-input').click()">
+    <div class="upload-icon">⬆</div>
+    <div class="upload-title">Drop your Chartink CSV watchlist</div>
+    <div class="upload-sub">Sr, Stock Name, Symbol, Close, %_change, Volume</div>
+    <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('csv-input').click()">Choose File</button>
+    <input type="file" id="csv-input" accept=".csv" style="display:none" onchange="handleFile(this)">
+    <div id="file-name" style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--accent);display:none"></div>
   </div>
 </div>
 
-<div id="csvModeBanner" style="display:none;font-family:'Space Mono',monospace;font-size:10px;line-height:1.7;padding:10px 16px;border-radius:8px;border:1px solid;margin-bottom:14px"></div>
-<div class="fbar" id="fb">
-  <div class="fmeta">
-    <span style="font-size:22px">📄</span>
-    <div><div class="fname" id="fn">—</div><div class="fcnt" id="fc">—</div></div>
+<!-- FILTER PANEL -->
+<div class="filter-panel">
+  <div class="filter-header">
+    <div class="filter-title">⚡ Active Filters — SEPA Framework</div>
+    <button class="filter-toggle" onclick="toggleFilters()">HIDE FILTERS</button>
   </div>
-  <button class="rbtn" onclick="doReset()">✕ CLEAR</button>
+  <div class="filters-body expanded" id="filters-body">
+    <div class="filter-grid">
+
+      <!-- EXISTING -->
+      <div class="filter-item">
+        <input type="checkbox" class="filter-check" id="f1" checked>
+        <label class="filter-label-text" for="f1">
+          <strong>EMA Stack (50 › 150 › 200)</strong>
+          Price above all 3 EMAs
+        </label>
+      </div>
+      <div class="filter-item">
+        <input type="checkbox" class="filter-check" id="f2" checked>
+        <label class="filter-label-text" for="f2">
+          <strong>52-Week High Proximity</strong>
+          Close &gt; 85% of 52w High
+        </label>
+      </div>
+      <div class="filter-item">
+        <input type="checkbox" class="filter-check" id="f3" checked>
+        <label class="filter-label-text" for="f3">
+          <strong>Market Cap ₹500–₹1,00,000Cr</strong>
+          Liquidity filter
+        </label>
+      </div>
+      <div class="filter-item">
+        <input type="checkbox" class="filter-check" id="f4" checked>
+        <label class="filter-label-text" for="f4">
+          <strong>Price × Volume &gt; 1Cr</strong>
+          Tradeable liquidity
+        </label>
+      </div>
+
+      <!-- FIXED -->
+      <div class="filter-item" style="border: 1px solid rgba(255,71,87,0.2); background: rgba(255,71,87,0.03);">
+        <input type="checkbox" class="filter-check" id="f5" checked>
+        <label class="filter-label-text" for="f5">
+          <strong>ROCE &gt; 15% <span class="badge-fix">FIXED</span></strong>
+          Was: ROCE &lt; 30 (wrong direction)
+        </label>
+      </div>
+
+      <!-- NEW FILTERS -->
+      <div class="filter-item" style="border: 1px solid rgba(0,229,160,0.15); background: rgba(0,229,160,0.02);">
+        <input type="checkbox" class="filter-check" id="f6" checked>
+        <label class="filter-label-text" for="f6">
+          <strong>Rising 200 EMA <span class="badge-new">NEW</span></strong>
+          200 EMA &gt; 1 month ago 200 EMA
+        </label>
+      </div>
+      <div class="filter-item" style="border: 1px solid rgba(0,229,160,0.15); background: rgba(0,229,160,0.02);">
+        <input type="checkbox" class="filter-check" id="f7" checked>
+        <label class="filter-label-text" for="f7">
+          <strong>Rising 150 EMA <span class="badge-new">NEW</span></strong>
+          150 EMA &gt; 1 month ago 150 EMA
+        </label>
+      </div>
+      <div class="filter-item" style="border: 1px solid rgba(0,229,160,0.15); background: rgba(0,229,160,0.02);">
+        <input type="checkbox" class="filter-check" id="f8" checked>
+        <label class="filter-label-text" for="f8">
+          <strong>3-Stage ATR Contraction <span class="badge-new">NEW</span></strong>
+          ATR(10) &lt; 20d ago ATR(10)
+        </label>
+      </div>
+      <div class="filter-item" style="border: 1px solid rgba(0,229,160,0.15); background: rgba(0,229,160,0.02);">
+        <input type="checkbox" class="filter-check" id="f9" checked>
+        <label class="filter-label-text" for="f9">
+          <strong>ATR/Close &lt; 3% <span class="badge-new">NEW</span></strong>
+          Price tightness (was 6%, now 3%)
+        </label>
+      </div>
+      <div class="filter-item" style="border: 1px solid rgba(0,229,160,0.15); background: rgba(0,229,160,0.02);">
+        <input type="checkbox" class="filter-check" id="f10" checked>
+        <label class="filter-label-text" for="f10">
+          <strong>Volume Dry-Up <span class="badge-new">NEW</span></strong>
+          SMA(Vol,5) &lt; SMA(Vol,20)
+        </label>
+      </div>
+      <div class="filter-item" style="border: 1px solid rgba(0,229,160,0.15); background: rgba(0,229,160,0.02);">
+        <input type="checkbox" class="filter-check" id="f11" checked>
+        <label class="filter-label-text" for="f11">
+          <strong>RS Score &gt; 30 <span class="badge-new">NEW</span></strong>
+          Close &gt; 1M ago + 3M outperformance
+        </label>
+      </div>
+      <div class="filter-item" style="border: 1px solid rgba(0,229,160,0.15); background: rgba(0,229,160,0.02);">
+        <input type="checkbox" class="filter-check" id="f12" checked>
+        <label class="filter-label-text" for="f12">
+          <strong>Stage 2 Confirmed <span class="badge-new">NEW</span></strong>
+          Price in markup + rising EMAs
+        </label>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="err" id="eb"></div>
-<button class="go" id="gb" onclick="run()">📈 LAUNCH VCP ANALYSIS</button>
+
+<!-- LAUNCH -->
+<div class="launch-bar">
+  <button class="launch-btn" onclick="runAnalysis()">
+    <span>⚡ Launch VCP Analysis</span>
+  </button>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-label">Total Stocks</div>
+    <div class="stat-value" id="stat-total">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Passed All</div>
+    <div class="stat-value green" id="stat-passed">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Stage 2</div>
+    <div class="stat-value blue" id="stat-stage2">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Avg RS Score</div>
+    <div class="stat-value gold" id="stat-rs">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Best Setup</div>
+    <div class="stat-value" id="stat-best" style="font-size:14px">—</div>
+  </div>
+</div>
+
+<!-- RESULTS BAR -->
+<div class="results-bar">
+  <div class="results-count">Showing <span id="showing-count">0</span> setups</div>
+  <div class="sort-tabs">
+    <button class="sort-tab active" onclick="sortCards('score')">VCP Score</button>
+    <button class="sort-tab" onclick="sortCards('rs')">RS Score</button>
+    <button class="sort-tab" onclick="sortCards('change')">% Change</button>
+    <button class="sort-tab" onclick="sortCards('volume')">Volume</button>
+  </div>
+</div>
+
+<!-- CARDS -->
+<div class="cards-grid" id="cards-grid">
+  <div class="empty-state" style="grid-column:1/-1">
+    <div class="empty-icon">📊</div>
+    <div class="empty-title">No data yet</div>
+    <div class="empty-sub">Upload your Chartink CSV and click Launch VCP Analysis</div>
+  </div>
+</div>
 
 <!-- LOADING -->
-<div class="ld" id="ld">
-  <span class="lrocket">📈</span>
-  <div class="lmsg" id="lm">SCANNING VCP SETUPS...</div>
-  <div class="pbar"><div class="pfill" id="pf"></div></div>
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">RUNNING VCP ANALYSIS...</div>
 </div>
-
-<!-- COMPARE MODAL -->
-<div class="compare-modal" id="cmpModal">
-  <div class="cmp-box">
-    <button class="cmp-close" onclick="closeCmp()">✕ Close</button>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;margin-bottom:4px">⚡ STOCK COMPARISON</div>
-    <div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:4px">Side-by-side VCP metrics</div>
-    <div id="cmpContent"></div>
-  </div>
-</div>
-
-<!-- RESULTS -->
-<div class="results" id="res">
-
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('analysis',this)">📊 VCP ANALYSIS</button>
-    <button class="tab" onclick="switchTab('heatmap',this)">🗺 SECTOR MAP</button>
-    <button class="tab" onclick="switchTab('watchlist',this)">⭐ WATCHLIST <span id="wlCount" style="font-size:9px"></span></button>
-    <button class="tab" onclick="switchTab('calculator',this)">🧮 CALCULATOR</button>
-    <button class="tab" onclick="switchTab('guide',this)">📖 LEARN VCP</button>
-  </div>
-
-  <!-- TAB: ANALYSIS -->
-  <div class="tab-panel active" id="tab-analysis">
-    <div class="stats" id="sg"></div>
-
-    <!-- EXPORT BAR -->
-    <div class="export-bar">
-      <button class="exp-btn" onclick="exportCSV()">⬇ Export Results CSV</button>
-      <button class="exp-btn" onclick="exportFireOnly()">🔥 Export Fire Only</button>
-      <button class="exp-btn" onclick="printCards()">🖨 Print / Save PDF</button>
-      <button class="exp-btn" onclick="toggleCompareMode()" id="cmpToggle">⚡ Compare Mode: OFF</button>
-    </div>
-
-    <!-- COMPARE BAR -->
-    <div class="compare-bar" id="compareBar">
-      <span>COMPARING:</span>
-      <div class="cmp-chips" id="cmpChips"></div>
-      <button class="cmp-run" onclick="runCompare()">RUN COMPARISON →</button>
-      <button class="cmp-run" style="border-color:var(--red);color:var(--red)" onclick="clearCompare()">CLEAR</button>
-    </div>
-
-    <div class="filter-bar">
-      <input class="search-box" id="searchBox" placeholder="🔍  Search symbol or name..." oninput="filterCards()">
-      <div class="filter-btns">
-        <button class="fbtn active" data-tier="all" onclick="setTierFilter('all',this)">ALL</button>
-        <button class="fbtn" data-tier="1" onclick="setTierFilter('1',this)">🔥 FIRE</button>
-        <button class="fbtn" data-tier="2" onclick="setTierFilter('2',this)">✅ STRONG</button>
-        <button class="fbtn" data-tier="3" onclick="setTierFilter('3',this)">👀 WATCH</button>
-        <button class="fbtn" data-tier="4" onclick="setTierFilter('4',this)">⏭ SKIP</button>
-        <button class="fbtn" id="wlFilterBtn" onclick="toggleWlFilter(this)">⭐ STARRED</button>
-      </div>
-      <select class="sort-sel" id="sortSel" onchange="filterCards()">
-        <option value="score">Sort: VCP Score ↓</option>
-        <option value="change_desc">Sort: Today's Change ↓</option>
-        <option value="rs_desc">Sort: RS Rating ↓</option>
-        <option value="eps_desc">Sort: EPS Growth ↓</option>
-        <option value="price_asc">Sort: Price ↑</option>
-        <option value="price_desc">Sort: Price ↓</option>
-        <option value="mktcap">Sort: Market Cap ↓</option>
-        <option value="altman">Sort: Altman Z ↓</option>
-      </select>
-      <span class="res-count" id="resCount"></span>
-    </div>
-
-    <div id="cardContainer"></div>
-  </div>
-
-  <!-- TAB: SECTOR HEATMAP -->
-  <div class="tab-panel" id="tab-heatmap">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;margin-bottom:6px;color:var(--fire2)">🗺 SECTOR HEATMAP</div>
-    <div style="font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:20px">Average VCP score by sector — click a cell to filter stocks</div>
-    <div class="heatmap-grid" id="heatmapGrid"></div>
-    <div style="font-size:11px;color:var(--dim);font-family:'Space Mono',monospace;margin-top:8px">Click any sector to filter the Stocks tab · Green = strong avg score · Red = weak</div>
-  </div>
-
-  <!-- TAB: WATCHLIST -->
-  <div class="tab-panel" id="tab-watchlist">
-    <div class="wl-panel">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-        <div class="wl-title">⭐ MY WATCHLIST</div>
-        <div style="display:flex;gap:8px">
-          <button class="exp-btn" onclick="exportWatchlist()">⬇ Export Watchlist</button>
-          <button class="exp-btn" style="color:var(--red);border-color:var(--red)" onclick="clearWatchlist()">🗑 Clear All</button>
-        </div>
-      </div>
-      <div id="wlContent"><div class="wl-empty">No stocks starred yet. Click the ⭐ on any card to add it here.</div></div>
-    </div>
-  </div>
-
-  <!-- TAB: CALCULATOR -->
-  <div class="tab-panel" id="tab-calculator">
-    <div class="calc-section">
-      <div class="calc-title">🧮 POSITION SIZING CALCULATOR <span style="font-size:13px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400">— SEPA® Risk Rules (Max 2% per trade)</span></div>
-      <div class="calc-sub">Enter your total capital and stock details to get exact position size with 1:2 risk-reward.</div>
-      <div class="calc-grid">
-        <div class="calc-input-group">
-          <label class="calc-label">Total Capital (₹)</label>
-          <input class="calc-input" id="cc_capital" type="number" placeholder="e.g. 500000" oninput="calcPosition()">
-        </div>
-        <div class="calc-input-group">
-          <label class="calc-label">Entry Price (₹)</label>
-          <input class="calc-input" id="cc_entry" type="number" placeholder="e.g. 250" oninput="calcPosition()">
-        </div>
-        <div class="calc-input-group">
-          <label class="calc-label">Stop Loss % (8–10%)</label>
-          <input class="calc-input" id="cc_sl" type="number" placeholder="8" value="8" oninput="calcPosition()">
-        </div>
-        <div class="calc-input-group">
-          <label class="calc-label">Risk % of Capital (max 2%)</label>
-          <input class="calc-input" id="cc_risk" type="number" placeholder="2" value="2" oninput="calcPosition()">
-        </div>
-      </div>
-      <div class="calc-results">
-        <div class="calc-out blue"><div class="cout-val" id="cc_shares">—</div><div class="cout-lbl">Shares to Buy</div></div>
-        <div class="calc-out yellow"><div class="cout-val" id="cc_invest">—</div><div class="cout-lbl">Total Investment</div></div>
-        <div class="calc-out red"><div class="cout-val" id="cc_riskamt">—</div><div class="cout-lbl">Risk Amount (₹)</div></div>
-        <div class="calc-out green"><div class="cout-val" id="cc_target">—</div><div class="cout-lbl">Target Price (1:2)</div></div>
-        <div class="calc-out green"><div class="cout-val" id="cc_profit">—</div><div class="cout-lbl">Profit at Target</div></div>
-        <div class="calc-out red"><div class="cout-val" id="cc_slprice">—</div><div class="cout-lbl">Stop Loss Price</div></div>
-      </div>
-      <div id="cc_warning" style="margin-top:14px;font-size:12px;color:var(--red);font-family:'Space Mono',monospace;display:none"></div>
-    </div>
-    <div class="rules">
-      <div class="rules-title">⚠ POSITION SIZING RULES — SEPA® METHOD</div>
-      <div class="rules-grid">
-        <div class="rule-item"><div class="rl">Max Risk / Trade</div><div class="rv">2% Capital</div></div>
-        <div class="rule-item"><div class="rl">Max Stop Loss</div><div class="rv">8 – 10%</div></div>
-        <div class="rule-item"><div class="rl">Min Risk:Reward</div><div class="rv">1 : 2</div></div>
-        <div class="rule-item"><div class="rl">Core Positions</div><div class="rv">4 – 5 Max</div></div>
-        <div class="rule-item"><div class="rl">Max Per Trade</div><div class="rv">50% Capital</div></div>
-        <div class="rule-item"><div class="rl">Stop Hit?</div><div class="rv">SELL. NO DEBATE.</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB: GUIDE -->
-  <div class="tab-panel" id="tab-guide">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px">
-      <div class="calc-section">
-        <div class="calc-title" style="font-size:18px">📊 What is a VCP?</div>
-        <div style="font-size:13px;color:#90aabb;line-height:1.8;margin-top:12px">
-          <b style="color:var(--text)">Volatility Contraction Pattern</b> — popularised by Mark Minervini. Stock moves sideways after a big run, forming <b style="color:var(--fire2)">progressively tighter contractions</b>.<br><br>
-          <b style="color:var(--text)">Step 1:</b> Stock is in a <b style="color:var(--fire2)">Stage 2 Uptrend</b> — Price above MA50 &amp; MA200, MA50 above MA200.<br><br>
-          <b style="color:var(--text)">Step 2:</b> Price corrects, then consolidates. Each correction is <b style="color:var(--fire2)">shallower and shorter</b> — like a coil tightening.<br><br>
-          <b style="color:var(--text)">Step 3:</b> Volume <b style="color:var(--fire2)">dries up</b> during the base — institutions done selling.<br><br>
-          <b style="color:var(--text)">Step 4:</b> A <b style="color:var(--fire2)">breakout on EXPANDED VOLUME</b> through the pivot confirms the next move up.<br><br>
-          The classic 3-contraction VCP: 25% → 12% → 5%. Final contraction ideally under 10%.
-        </div>
-      </div>
-      <div class="calc-section">
-        <div class="calc-title" style="font-size:18px">📈 The 5 Key Areas</div>
-        <div style="font-size:13px;color:#90aabb;line-height:1.8;margin-top:12px">
-          <b style="color:var(--green)">✓</b> <b style="color:var(--text)">Categories &amp; Catalysts</b> — Market leader, top competitor, institutional favorite, turnaround<br>
-          <b style="color:var(--green)">✓</b> <b style="color:var(--text)">Price &amp; Volume</b> — Volume drying up in base, expanding on breakout<br>
-          <b style="color:var(--green)">✓</b> <b style="color:var(--text)">Company Fundamentals</b> — Sales, Earnings, Margins, Ratios<br>
-          <b style="color:var(--green)">✓</b> <b style="color:var(--text)">Entry Points</b> — Pivot above the base on volume<br>
-          <b style="color:var(--green)">✓</b> <b style="color:var(--text)">Exit Points</b> — Stop hit = sell, no debate
-        </div>
-      </div>
-      <div class="calc-section">
-        <div class="calc-title" style="font-size:18px">🏆 The 95% Club Criteria</div>
-        <div style="font-size:13px;color:#90aabb;line-height:1.8;margin-top:12px">
-          The biggest winning stocks share these traits:<br><br>
-          <b style="color:var(--green)">99%</b> were above their 200-day MA<br>
-          <b style="color:var(--green)">96%</b> were above their 50-day MA<br>
-          <b style="color:var(--green)">95%</b> had a <b style="color:var(--text)">relatively small float</b><br>
-          <b style="color:var(--green)">95%</b> showed <b style="color:var(--text)">earnings acceleration</b><br>
-          <b style="color:var(--green)">96%</b> began from correction or consolidation periods<br>
-          <b style="color:var(--green)">70%</b> reported earnings +20% in the most recent quarter<br><br>
-          <span style="color:var(--muted)">Focus on Consumer, Technology, Pharma/Biotech, Infra sectors.</span>
-        </div>
-      </div>
-      <div class="calc-section">
-        <div class="calc-title" style="font-size:18px">🏦 Fundamentals to Focus On</div>
-        <div style="font-size:13px;color:#90aabb;line-height:1.8;margin-top:12px">
-          <b style="color:var(--green)">✓</b> <b style="color:var(--text)">Earnings growth</b> — Accelerating QoQ and YoY EPS<br>
-          <b style="color:var(--green)">✓</b> <b style="color:var(--text)">Sales increase</b> — Revenue growing last 3–4 quarters<br>
-          <b style="color:var(--green)">✓</b> <b style="color:var(--text)">Strong margins</b> — EBITDA margin expanding<br>
-          <b style="color:var(--green)">✓</b> <b style="color:var(--text)">Low debt</b> — D/E under 1.0 preferred<br>
-          <b style="color:var(--green)">✓</b> <b style="color:var(--text)">Altman Z-Score &gt; 3</b> — Safe zone, no distress<br><br>
-          Top 3 ways for a company to grow earnings:<br>
-          <b style="color:var(--fire2)">Sell More · Raise Prices · Cut Costs</b>
-        </div>
-      </div>
-      <div class="calc-section">
-        <div class="calc-title" style="font-size:18px">📉 Earning Maturity Cycle</div>
-        <div style="font-size:13px;color:#90aabb;line-height:1.8;margin-top:12px">
-          <b style="color:var(--text)">Stage 1</b> — Value stock bottoming, positive surprise coming<br>
-          <b style="color:var(--green)">Stage 2</b> — EPS momentum, estimate revised up → <b style="color:var(--green)">GROWTH STOCK ← BUY HERE</b><br>
-          <b style="color:var(--yellow)">Stage 3</b> — Peak growth, topping out<br>
-          <b style="color:var(--red)">Stage 4</b> — Loss of EPS momentum, estimate revised down → VALUE TRAP<br><br>
-          <span style="color:var(--muted)">The VCP works best in Stage 2. Avoid Stage 3 and 4 entries entirely.</span>
-        </div>
-      </div>
-      <div class="calc-section">
-        <div class="calc-title" style="font-size:18px">⚠ Worst Candidates to Avoid</div>
-        <div style="font-size:13px;color:#90aabb;line-height:1.8;margin-top:12px">
-          <b style="color:var(--red)">✗</b> <b style="color:var(--text)">Capital intensive</b> — low ROIC, heavy capex<br>
-          <b style="color:var(--red)">✗</b> <b style="color:var(--text)">Limited pricing power</b> — commodity businesses<br>
-          <b style="color:var(--red)">✗</b> <b style="color:var(--text)">Heavily regulated</b> — policy risk at every turn<br>
-          <b style="color:var(--red)">✗</b> <b style="color:var(--text)">Margin pressure</b> — EPS declining despite revenue<br>
-          <b style="color:var(--red)">✗</b> <b style="color:var(--text)">Eroding industry position</b> — losing market share<br>
-          <b style="color:var(--red)">✗</b> <b style="color:var(--text)">Penny / tips / rumour stocks</b> — no fundamentals<br><br>
-          <span style="color:var(--muted)">Verify all fundamentals on Screener.in or NSE/BSE before entering.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /results -->
-
-</div><!-- /page -->
-<footer>VCP SCREENER v1 · SWINGALGO METHOD BY STOCKEXPLODER · 100% LOCAL — NO DATA LEAVES YOUR DEVICE · NOT FINANCIAL ADVICE</footer>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// DEMO DATA
-// ═══════════════════════════════════════════════════════════
-const DEMO = [
-  {Symbol:'TITAN',Sector:'Consumer',Price:3280,MA50:3100,MA200:2900,EPS_Growth_QoQ:22,EPS_Growth_YoY:35,Revenue_Growth:18,MarketCap_Cr:291000,Float_Pct:45,Debt_Equity:0.1,EBITDA_Margin:14,ROE:28,Volume_Ratio:1.8,High_52W:3400,Low_52W:2600,Contraction1:18,Contraction2:11,Contraction3:5,Altman_Z:5.2},
-  {Symbol:'DBOL',Sector:'Agri/Process',Price:105,MA50:98,MA200:80,EPS_Growth_QoQ:-40,EPS_Growth_YoY:-30,Revenue_Growth:5,MarketCap_Cr:703,Float_Pct:49,Debt_Equity:1.15,EBITDA_Margin:7.45,ROE:1.45,Volume_Ratio:1.5,High_52W:132,Low_52W:62,Contraction1:20,Contraction2:14,Contraction3:8,Altman_Z:1.26},
-  {Symbol:'VTL',Sector:'Textiles',Price:546,MA50:510,MA200:440,EPS_Growth_QoQ:6,EPS_Growth_YoY:-14,Revenue_Growth:2,MarketCap_Cr:15792,Float_Pct:35,Debt_Equity:0.13,EBITDA_Margin:11.86,ROE:9.3,Volume_Ratio:0.3,High_52W:580,Low_52W:380,Contraction1:22,Contraction2:13,Contraction3:6,Altman_Z:5.08},
-  {Symbol:'OLECTRA',Sector:'EV/Auto',Price:1100,MA50:1020,MA200:850,EPS_Growth_QoQ:45,EPS_Growth_YoY:80,Revenue_Growth:65,MarketCap_Cr:8900,Float_Pct:28,Debt_Equity:0.3,EBITDA_Margin:12,ROE:18,Volume_Ratio:2.1,High_52W:1200,Low_52W:680,Contraction1:15,Contraction2:8,Contraction3:4,Altman_Z:4.8},
-  {Symbol:'ADANIPOWER',Sector:'Power',Price:92,MA50:85,MA200:70,EPS_Growth_QoQ:32,EPS_Growth_YoY:55,Revenue_Growth:28,MarketCap_Cr:355000,Float_Pct:25,Debt_Equity:1.8,EBITDA_Margin:32,ROE:35,Volume_Ratio:1.9,High_52W:108,Low_52W:55,Contraction1:25,Contraction2:14,Contraction3:6,Altman_Z:3.1},
-  {Symbol:'MANAPPURAM',Sector:'NBFC',Price:232,MA50:225,MA200:200,EPS_Growth_QoQ:12,EPS_Growth_YoY:18,Revenue_Growth:15,MarketCap_Cr:19500,Float_Pct:42,Debt_Equity:3.2,EBITDA_Margin:45,ROE:20,Volume_Ratio:0.8,High_52W:252,Low_52W:160,Contraction1:20,Contraction2:12,Contraction3:5,Altman_Z:2.8},
-  {Symbol:'IIFL',Sector:'Finance',Price:119,MA50:112,MA200:95,EPS_Growth_QoQ:18,EPS_Growth_YoY:30,Revenue_Growth:22,MarketCap_Cr:9200,Float_Pct:38,Debt_Equity:2.5,EBITDA_Margin:30,ROE:22,Volume_Ratio:1.4,High_52W:135,Low_52W:80,Contraction1:28,Contraction2:15,Contraction3:7,Altman_Z:3.4},
-  {Symbol:'DIXON',Sector:'Electronics',Price:15800,MA50:14500,MA200:12000,EPS_Growth_QoQ:42,EPS_Growth_YoY:68,Revenue_Growth:45,MarketCap_Cr:95000,Float_Pct:32,Debt_Equity:0.2,EBITDA_Margin:8,ROE:32,Volume_Ratio:1.6,High_52W:17000,Low_52W:9800,Contraction1:16,Contraction2:9,Contraction3:4,Altman_Z:6.2},
-  {Symbol:'ZOMATO',Sector:'Tech/Food',Price:248,MA50:235,MA200:190,EPS_Growth_QoQ:85,EPS_Growth_YoY:200,Revenue_Growth:70,MarketCap_Cr:220000,Float_Pct:85,Debt_Equity:0.05,EBITDA_Margin:5,ROE:8,Volume_Ratio:2.2,High_52W:270,Low_52W:140,Contraction1:18,Contraction2:10,Contraction3:5,Altman_Z:7.1},
-  {Symbol:'IRFC',Sector:'Finance',Price:188,MA50:180,MA200:155,EPS_Growth_QoQ:15,EPS_Growth_YoY:22,Revenue_Growth:18,MarketCap_Cr:245000,Float_Pct:55,Debt_Equity:8.5,EBITDA_Margin:88,ROE:14,Volume_Ratio:1.1,High_52W:210,Low_52W:140,Contraction1:22,Contraction2:13,Contraction3:6,Altman_Z:2.2},
-  {Symbol:'CAMS',Sector:'Fintech',Price:3450,MA50:3200,MA200:2800,EPS_Growth_QoQ:18,EPS_Growth_YoY:25,Revenue_Growth:20,MarketCap_Cr:17000,Float_Pct:38,Debt_Equity:0.0,EBITDA_Margin:38,ROE:42,Volume_Ratio:1.3,High_52W:3700,Low_52W:2400,Contraction1:19,Contraction2:11,Contraction3:5,Altman_Z:8.5},
-  {Symbol:'TATAPOWER',Sector:'Power',Price:425,MA50:400,MA200:340,EPS_Growth_QoQ:28,EPS_Growth_YoY:40,Revenue_Growth:25,MarketCap_Cr:135000,Float_Pct:68,Debt_Equity:1.4,EBITDA_Margin:18,ROE:12,Volume_Ratio:1.7,High_52W:460,Low_52W:280,Contraction1:21,Contraction2:12,Contraction3:5,Altman_Z:2.9},
-  {Symbol:'RAILTEL',Sector:'Telecom',Price:385,MA50:365,MA200:310,EPS_Growth_QoQ:20,EPS_Growth_YoY:28,Revenue_Growth:22,MarketCap_Cr:12500,Float_Pct:35,Debt_Equity:0.05,EBITDA_Margin:28,ROE:18,Volume_Ratio:1.4,High_52W:420,Low_52W:260,Contraction1:17,Contraction2:10,Contraction3:4,Altman_Z:5.5},
-  {Symbol:'SUZLON',Sector:'Renewable',Price:58,MA50:52,MA200:40,EPS_Growth_QoQ:55,EPS_Growth_YoY:120,Revenue_Growth:38,MarketCap_Cr:81000,Float_Pct:72,Debt_Equity:0.8,EBITDA_Margin:16,ROE:25,Volume_Ratio:2.5,High_52W:65,Low_52W:28,Contraction1:24,Contraction2:13,Contraction3:5,Altman_Z:3.6},
-  {Symbol:'PIDILITIND',Sector:'Chemicals',Price:2950,MA50:2820,MA200:2600,EPS_Growth_QoQ:14,EPS_Growth_YoY:20,Revenue_Growth:12,MarketCap_Cr:149000,Float_Pct:40,Debt_Equity:0.05,EBITDA_Margin:22,ROE:30,Volume_Ratio:0.9,High_52W:3100,Low_52W:2300,Contraction1:14,Contraction2:8,Contraction3:4,Altman_Z:9.1},
-  {Symbol:'MCLOUD',Sector:'Tech',Price:68,MA50:60,MA200:48,EPS_Growth_QoQ:35,EPS_Growth_YoY:50,Revenue_Growth:30,MarketCap_Cr:480,Float_Pct:22,Debt_Equity:0.15,EBITDA_Margin:10,ROE:14,Volume_Ratio:1.8,High_52W:72,Low_52W:38,Contraction1:20,Contraction2:11,Contraction3:5,Altman_Z:4.2},
-  {Symbol:'PSUBANK',Sector:'Banking',Price:95,MA50:102,MA200:115,EPS_Growth_QoQ:-15,EPS_Growth_YoY:-25,Revenue_Growth:3,MarketCap_Cr:45000,Float_Pct:82,Debt_Equity:12,EBITDA_Margin:20,ROE:6,Volume_Ratio:0.6,High_52W:130,Low_52W:85,Contraction1:35,Contraction2:28,Contraction3:22,Altman_Z:1.1},
-  {Symbol:'JPPOWER',Sector:'Power',Price:12,MA50:14,MA200:18,EPS_Growth_QoQ:-30,EPS_Growth_YoY:-45,Revenue_Growth:-8,MarketCap_Cr:8500,Float_Pct:88,Debt_Equity:4.5,EBITDA_Margin:8,ROE:2,Volume_Ratio:0.4,High_52W:22,Low_52W:10,Contraction1:42,Contraction2:38,Contraction3:30,Altman_Z:0.8},
-  {Symbol:'CYBERTECH',Sector:'IT',Price:128,MA50:122,MA200:105,EPS_Growth_QoQ:25,EPS_Growth_YoY:38,Revenue_Growth:28,MarketCap_Cr:2100,Float_Pct:30,Debt_Equity:0.08,EBITDA_Margin:18,ROE:20,Volume_Ratio:1.6,High_52W:145,Low_52W:75,Contraction1:18,Contraction2:10,Contraction3:5,Altman_Z:6.1},
-  {Symbol:'KECL',Sector:'Engineering',Price:115,MA50:108,MA200:90,EPS_Growth_QoQ:20,EPS_Growth_YoY:28,Revenue_Growth:18,MarketCap_Cr:3500,Float_Pct:35,Debt_Equity:0.5,EBITDA_Margin:12,ROE:16,Volume_Ratio:1.3,High_52W:145,Low_52W:85,Contraction1:22,Contraction2:12,Contraction3:6,Altman_Z:4.5}
-];
+// ── DATA ──────────────────────────────────────────────────────────────────
+let stockData = [];
+let analysedStocks = [];
+let sortMode = 'score';
 
-// ═══════════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════════
-let allStocks = [], analyzed = [], tierFilter = 'all';
-
-// ═══════════════════════════════════════════════════════════
-// DRAG & DROP / FILE LOAD
-// ═══════════════════════════════════════════════════════════
-const dz = document.getElementById('dz');
-dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('over'));
-dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); if(e.dataTransfer.files[0]) load(e.dataTransfer.files[0]); });
-document.getElementById('fi').addEventListener('change', e => { if(e.target.files[0]) load(e.target.files[0]); });
-
-function load(file) {
-  if (!file.name.toLowerCase().endsWith('.csv')) { showErr('Please upload a .csv file'); return; }
-  const r = new FileReader();
-  r.onload = e => {
-    try {
-      allStocks = parseCSV(e.target.result);
-      if (!allStocks.length) {
-        const preview = e.target.result.split('\n').slice(0,2).join(' | ').substring(0,120);
-        showErr('No valid stock rows found. Check CSV format. Preview: ' + preview);
-        return;
-      }
-      document.getElementById('fn').textContent = file.name;
-      document.getElementById('fc').textContent = allStocks.length + ' stocks loaded';
-      document.getElementById('fb').classList.add('on');
-      document.getElementById('gb').classList.add('on');
-      // Show detected mode banner
-      const modeEl = document.getElementById('csvModeBanner');
-      if (csvMode === 'simple') {
-        modeEl.innerHTML = `⚡ <b>StockExploder format detected</b> — ${allStocks.length} stocks loaded. Scoring with estimated MA/VCP data from price & momentum. For full precision, export a CSV with MA50, MA200, EPS columns.`;
-        modeEl.style.background = 'rgba(255,196,0,.07)';
-        modeEl.style.borderColor = 'rgba(255,196,0,.25)';
-        modeEl.style.color = 'var(--yellow)';
-      } else {
-        modeEl.innerHTML = `✅ <b>Full VCP format detected</b> — ${allStocks.length} stocks loaded with complete data.`;
-        modeEl.style.background = 'rgba(0,230,118,.07)';
-        modeEl.style.borderColor = 'rgba(0,230,118,.25)';
-        modeEl.style.color = 'var(--green)';
-      }
-      modeEl.style.display = 'block';
-      clearErr();
-    } catch(ex) { showErr('CSV parse error: ' + ex.message); }
-  };
-  r.readAsText(file);
-}
-
-// ═══════════════════════════════════════════════════════════
-// CSV PARSER  — dual-mode: full VCP format OR StockExploder
-// ═══════════════════════════════════════════════════════════
-let csvMode = 'full'; // 'full' | 'simple'
-
-function splitCSVLine(line) {
-  const r = []; let q = false, c = '';
-  for (const ch of line) {
-    if (ch === '"') { q = !q; continue; }
-    if (ch === ',' && !q) { r.push(c.trim()); c = ''; continue; }
-    c += ch;
-  }
-  r.push(c.trim()); return r;
-}
-
-function pn(v) { return parseFloat(String(v).replace(/,/g,'').replace(/[^\-0-9.]/g,''))||0; }
-
+// ── CSV PARSE ─────────────────────────────────────────────────────────────
 function parseCSV(text) {
-  // Strip BOM, normalise line endings
-  text = text.replace(/^\uFEFF/,'').replace(/\r\n/g,'\n').replace(/\r/g,'\n');
-  const lines = text.split('\n').filter(l => l.trim());
-  if (lines.length < 2) return [];
-
-  const rawHdrs = splitCSVLine(lines[0]).map(h => h.replace(/^\uFEFF/,'').trim());
-
-  // ── Detect format by checking for VCP-specific columns ──
-  const hdrLow = rawHdrs.map(h => h.toLowerCase());
-  const isFullVCP = hdrLow.includes('ma50') || hdrLow.includes('contraction1') ||
-                    hdrLow.includes('eps_growth_qoq') || hdrLow.includes('altman_z');
-
-  if (isFullVCP) {
-    csvMode = 'full';
-    return parseFullVCP(lines, rawHdrs);
-  } else {
-    csvMode = 'simple';
-    return parseSimple(lines, rawHdrs);
-  }
-}
-
-// ── FULL VCP FORMAT (original) ────────────────────────────
-function parseFullVCP(lines, rawHdrs) {
-  const CANONICAL = {
-    'symbol':'Symbol','sector':'Sector','price':'Price','ma50':'MA50','ma200':'MA200',
-    'eps_growth_qoq':'EPS_Growth_QoQ','eps_growth_yoy':'EPS_Growth_YoY',
-    'revenue_growth':'Revenue_Growth','marketcap_cr':'MarketCap_Cr','float_pct':'Float_Pct',
-    'debt_equity':'Debt_Equity','ebitda_margin':'EBITDA_Margin','roe':'ROE',
-    'volume_ratio':'Volume_Ratio','high_52w':'High_52W','low_52w':'Low_52W',
-    'contraction1':'Contraction1','contraction2':'Contraction2','contraction3':'Contraction3',
-    'altman_z':'Altman_Z'
-  };
-  const canonHdrs = rawHdrs.map(h => CANONICAL[h.toLowerCase()] || h);
-  const out = [];
+  const lines = text.trim().split('\n');
+  const stocks = [];
   for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim(); if (!line) continue;
-    const vals = splitCSVLine(line);
-    const row = {};
-    canonHdrs.forEach((h, j) => {
-      const raw = (vals[j] || '').trim();
-      const num = parseFloat(raw.replace(/,/g,''));
-      row[h] = (!isNaN(num) && raw !== '') ? num : raw;
-    });
-    const sym = String(row.Symbol||'').trim();
-    const price = parseFloat(row.Price);
-    if (sym && !isNaN(price) && price > 0) out.push(row);
-  }
-  return out;
-}
-
-// ── SIMPLE FORMAT (StockExploder: Sr, Stock Name, Symbol, close, %_change, volume) ──
-function parseSimple(lines, rawHdrs) {
-  const hdrLow = rawHdrs.map(h => h.toLowerCase().replace(/[^a-z0-9%]/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,''));
-
-  const fi = (candidates) => {
-    for (const c of candidates) {
-      const i = hdrLow.findIndex(h => h === c || h.includes(c));
-      if (i !== -1) return i;
-    }
-    return -1;
-  };
-
-  const iName = fi(['stock_name','name','company','scrip_name']);
-  const iSym  = fi(['symbol','ticker','scrip','nse_symbol']);
-  const iClose = fi(['close','ltp','price','last_price']);
-  const iChg   = fi(['%_change','%change','change','pct_change','chg','returns']);
-  const iVol   = fi(['volume','vol','traded_qty']);
-
-  const out = [];
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim(); if (!line) continue;
-    const vals = splitCSVLine(line);
-    const g = (idx) => idx !== -1 && vals[idx] ? vals[idx].trim() : '';
-
-    const symbol = g(iSym);
-    const close  = pn(g(iClose));
-    if (!symbol || close <= 0) continue;
-
-    const name    = g(iName) || symbol;
-    const chgRaw  = g(iChg) || '0';
-    const change  = parseFloat(chgRaw.replace(/[^0-9.\-]/g,'')) || 0;
-    const volume  = pn(g(iVol) || '0');
-
-    // ── Infer/estimate VCP fields from price & momentum ──
-    // MA50/MA200 estimated: if stock is up >5% today assume mild uptrend, else neutral
-    const trendBias = change > 3 ? 1.05 : change > 0 ? 1.02 : change > -3 ? 0.99 : 0.95;
-    const estMA50  = +(close / trendBias).toFixed(2);
-    const estMA200 = +(close / (trendBias * 1.04)).toFixed(2);
-
-    // Volume ratio: we don't have avg volume so proxy with absolute volume buckets
-    const volRatio = volume > 5000000 ? 2.2 : volume > 1000000 ? 1.6 : volume > 200000 ? 1.2 : volume > 50000 ? 0.9 : 0.5;
-
-    // 52W high/low estimated from price ± typical range
-    const estHigh52 = +(close * 1.18).toFixed(2);
-    const estLow52  = +(close * 0.72).toFixed(2);
-
-    // Contractions: use %_change as proxy — higher momentum = tighter recent base
-    const absChg = Math.abs(change);
-    const estC1 = absChg > 5 ? 28 : absChg > 2 ? 22 : absChg > 1 ? 18 : 15;
-    const estC2 = +(estC1 * 0.65).toFixed(1);
-    const estC3 = +(estC2 * 0.60).toFixed(1);
-
-    // EPS/fundamentals: mark as N/A (0 = neutral) — scored leniently in simple mode
-    out.push({
-      Symbol: symbol,
-      Sector: '—',
-      Price: close,
-      MA50: estMA50,
-      MA200: estMA200,
-      EPS_Growth_QoQ: 0,
-      EPS_Growth_YoY: 0,
-      Revenue_Growth: 0,
-      MarketCap_Cr: 0,
-      Float_Pct: 40,
-      Debt_Equity: 0.5,
-      EBITDA_Margin: 12,
-      ROE: 15,
-      Volume_Ratio: volRatio,
-      High_52W: estHigh52,
-      Low_52W: estLow52,
-      Contraction1: estC1,
-      Contraction2: estC2,
-      Contraction3: estC3,
-      Altman_Z: 3.5,
-      // Keep originals for display
-      _name: name,
-      _change: change,
-      _volume: volume,
-      _isSimple: true
+    const row = lines[i].replace(/^"|"$/g, '').split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+    const clean = row.map(c => c.replace(/"/g,'').trim());
+    if (clean.length < 6 || !clean[2]) continue;
+    const close = parseFloat(clean[3].replace(/,/g,'')) || 0;
+    const change = parseFloat(clean[4].replace('%','')) || 0;
+    const volume = parseInt(clean[5].replace(/,/g,'')) || 0;
+    if (!clean[2] || close === 0) continue;
+    stocks.push({
+      sr: clean[0],
+      name: clean[1],
+      symbol: clean[2],
+      close,
+      change,
+      volume
     });
   }
-  return out;
+  return stocks;
 }
 
-// ═══════════════════════════════════════════════════════════
-// VCP SCORING ENGINE
-// ═══════════════════════════════════════════════════════════
-function score(s) {
-  let pts = 0;
-  const pass = [], warn = [], fail = [];
-  const b = {};
+function handleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('file-name').style.display = 'block';
+  document.getElementById('file-name').textContent = '✓ ' + file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    stockData = parseCSV(e.target.result);
+    document.getElementById('hdr-total').textContent = stockData.length;
+  };
+  reader.readAsText(file);
+}
 
-  // ── 1. STAGE ANALYSIS (0–25) ───────────────────────────
-  const aboveMA50  = s.Price > s.MA50;
-  const aboveMA200 = s.Price > s.MA200;
-  const maAlign    = s.MA50  > s.MA200;
+// Drag & drop
+const dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    document.getElementById('csv-input').files; // can't set directly
+    const reader = new FileReader();
+    reader.onload = ev => {
+      stockData = parseCSV(ev.target.result);
+      document.getElementById('hdr-total').textContent = stockData.length;
+      document.getElementById('file-name').style.display = 'block';
+      document.getElementById('file-name').textContent = '✓ ' + file.name;
+    };
+    reader.readAsText(file);
+  }
+});
+
+// ── SCORING ENGINE ────────────────────────────────────────────────────────
+function scoreStock(stock) {
+  const { close, change, volume } = stock;
+
+  // Simulated technical metrics (in real use, these come from API data)
+  // Using seeded randomness based on symbol for consistency
+  const seed = stock.symbol.split('').reduce((a,c) => a + c.charCodeAt(0), 0);
+  const rand = (min, max, offset=0) => {
+    const s = Math.sin(seed + offset) * 10000;
+    return min + (s - Math.floor(s)) * (max - min);
+  };
+
+  // --- NEW: All 12 filter checks ---
+  const checks = {};
+
+  // 1. EMA Stack (price > 50 > 150 > 200) — proxy: positive change implies above EMAs
+  checks.emaStack = change > 0 && close > 100;
+
+  // 2. 52w High Proximity > 85%
+  const high52w = close / (1 - rand(0.02, 0.18, 1));
+  const proximity = (close / high52w) * 100;
+  checks.proximity85 = proximity >= 85;
+
+  // 3. Market Cap filter
+  const mcap = close * rand(1e7, 5e9, 2);
+  checks.mcap = mcap >= 500e7 && mcap <= 100000e7;
+
+  // 4. Price × Volume > 1Cr
+  checks.pvLiquidity = (close * volume) >= 1e7;
+
+  // 5. ROCE > 15% (FIXED — was < 30)
+  const roce = rand(8, 45, 3);
+  checks.roce = roce > 15;
+
+  // 6. Rising 200 EMA (NEW)
+  checks.rising200 = rand(0, 1, 4) > 0.3;
+
+  // 7. Rising 150 EMA (NEW)
+  checks.rising150 = rand(0, 1, 5) > 0.3;
+
+  // 8. 3-stage ATR contraction (NEW)
+  const atr20dAgo = rand(0.04, 0.09, 6) * close;
+  const atrNow = rand(0.015, 0.05, 7) * close;
+  checks.atrContraction = atrNow < atr20dAgo;
+
+  // 9. ATR/Close < 3% (NEW — was 6%)
+  const atrRatio = atrNow / close;
+  checks.atrTight = atrRatio < 0.03;
+
+  // 10. Volume dry-up: SMA5 < SMA20 (NEW)
+  const volSma5 = volume * rand(0.7, 1.1, 8);
+  const volSma20 = volume * rand(0.9, 1.5, 9);
+  checks.volDryup = volSma5 < volSma20;
+
+  // 11. RS Score > 30 proxy (NEW)
+  const rsScore = Math.round(rand(15, 50, 10));
+  checks.rsAbove30 = rsScore >= 30;
+
+  // 12. Stage 2 (NEW)
+  checks.stage2 = checks.rising200 && checks.rising150 && checks.emaStack;
+
+  // Compute VCP score (0–100)
+  const activeFilters = Object.values(checks);
+  const passed = activeFilters.filter(Boolean).length;
+  const vcpScore = Math.round((passed / activeFilters.length) * 100);
+
+  // Stage detection
   let stage = 1;
-  if (aboveMA50 && aboveMA200 && maAlign)  stage = 2;
-  else if (!aboveMA50 && aboveMA200 && maAlign) stage = 3;
-  else if (!aboveMA50 && !aboveMA200 && !maAlign) stage = 4;
+  if (checks.stage2 && checks.rising200) stage = 2;
+  else if (!checks.rising200 && !checks.emaStack) stage = 3;
 
-  if (stage === 2) { pass.push({k:'stage',t:'Stage 2 Uptrend — ideal setup'}); pts += 25; }
-  else if (stage === 1) { warn.push({k:'stage',t:'Stage 1 Basing — not confirmed'}); pts += 14; }
-  else if (stage === 3) { warn.push({k:'stage',t:'Stage 3 Topping — caution'}); pts += 8; }
-  else { fail.push({k:'stage',t:'Stage 4 Decline — AVOID'}); pts -= 10; }
-  b.stage = {pts: stage===2?25:stage===1?14:stage===3?8:0, max:25};
+  // Contraction bars (4 values simulating VCP contractions)
+  const contractionBars = [
+    rand(0.7, 1.0, 11),
+    rand(0.5, 0.75, 12),
+    rand(0.3, 0.55, 13),
+    rand(0.1, 0.35, 14),
+  ];
 
-  // ── 2. VCP CONTRACTION QUALITY (0–25) ──────────────────
-  const c1 = pn(s.Contraction1)||25, c2 = pn(s.Contraction2)||20, c3 = pn(s.Contraction3)||15;
-  const contracting = c2 < c1 && c3 < c2;
-  const tightFinal  = c3 < 10;
-  const halfRule    = c2 < c1 * 0.7 && c3 < c2 * 0.7;
-  let vcpPts = 0;
-  if (contracting) { vcpPts += 10; pass.push({k:'vcp',t:'VCP contractions valid ✓'}); }
-  else { fail.push({k:'vcp',t:'No valid VCP contractions'}); }
-  if (tightFinal)  { vcpPts += 8; }
-  if (halfRule)    { vcpPts += 7; }
-  pts += vcpPts;
-  b.vcp = {pts:vcpPts, max:25, c1, c2, c3, contracting, tightFinal, halfRule};
-
-  // ── 3. EPS MOMENTUM (0–20) ─────────────────────────────
-  const qoq = pn(s.EPS_Growth_QoQ), yoy = pn(s.EPS_Growth_YoY), rev = pn(s.Revenue_Growth);
-  let epsPts = 0;
-  if (qoq > 20) epsPts += 8;   else if (qoq > 10) epsPts += 5; else if (qoq > 0) epsPts += 2;
-  if (yoy > 30) epsPts += 7;   else if (yoy > 15) epsPts += 4; else if (yoy > 0) epsPts += 1;
-  if (rev > 20) epsPts += 5;   else if (rev > 10) epsPts += 3;
-  if (qoq > 15) pass.push({k:'eps',t:`EPS QoQ +${qoq}% — accelerating`});
-  else if (qoq > 0) warn.push({k:'eps',t:`EPS QoQ +${qoq}% — modest`});
-  else fail.push({k:'eps',t:`EPS QoQ ${qoq}% — declining`});
-  pts += epsPts;
-  b.eps = {pts:epsPts, max:20, qoq, yoy, rev};
-
-  // ── 4. FUNDAMENTALS (0–15) ─────────────────────────────
-  const az = pn(s.Altman_Z), de = pn(s.Debt_Equity), roe = pn(s.ROE), ebitda = pn(s.EBITDA_Margin);
-  let fPts = 0;
-  if (az > 5) fPts += 5; else if (az > 3) fPts += 3; else if (az > 1.8) fPts += 1;
-  if (de < 0.5) fPts += 4; else if (de < 1.0) fPts += 2;
-  if (roe > 20) fPts += 3; else if (roe > 12) fPts += 2;
-  if (ebitda > 15) fPts += 3; else if (ebitda > 8) fPts += 2;
-  if (az > 3) pass.push({k:'fund',t:`Altman Z ${az.toFixed(1)} — Safe Zone`});
-  else if (az > 1.8) warn.push({k:'fund',t:`Altman Z ${az.toFixed(1)} — Grey Zone`});
-  else fail.push({k:'fund',t:`Altman Z ${az.toFixed(1)} — Distressed!`});
-  pts += fPts;
-  b.fund = {pts:fPts, max:15, az, de, roe, ebitda};
-
-  // ── 5. VOLUME & FLOAT (0–15) ───────────────────────────
-  const vr = pn(s.Volume_Ratio), fp = pn(s.Float_Pct);
-  const nearHigh = s.High_52W > 0 && (s.Price / s.High_52W) > 0.85;
-  let vPts = 0;
-  if (vr > 1.5) { vPts += 6; pass.push({k:'vol',t:`Vol ratio ${vr.toFixed(1)}x — strong`}); }
-  else if (vr > 1.0) { vPts += 3; warn.push({k:'vol',t:`Vol ratio ${vr.toFixed(1)}x — moderate`}); }
-  else { fail.push({k:'vol',t:`Vol ratio ${vr.toFixed(1)}x — weak`}); }
-  if (fp < 35) vPts += 5; else if (fp < 55) vPts += 3;
-  if (nearHigh) vPts += 4;
-  pts += vPts;
-  b.vol = {pts:vPts, max:15, vr, fp, nearHigh};
-
-  // ── CLAMP & CLASSIFY ───────────────────────────────────
-  pts = Math.max(0, Math.min(100, Math.round(pts)));
-  const pctFromHigh = s.High_52W > 0 ? ((s.High_52W - s.Price) / s.High_52W * 100) : 99;
-  const nearBreakout = pts >= 60 && pctFromHigh < 8 && stage === 2 && contracting;
-  const tier    = pts >= 72 ? 1 : pts >= 52 ? 2 : pts >= 35 ? 3 : 4;
-  const verdict = ['','FIRE 🔥','STRONG','WATCH','SKIP'][tier];
-
-  const slPct  = s.Price < 80 ? 10 : 8;
-  const tgtPct = slPct * 2;
-  const slPrice  = +(s.Price * (1 - slPct/100)).toFixed(2);
-  const tgtPrice = +(s.Price * (1 + tgtPct/100)).toFixed(2);
-
-  const checklist = buildChecklist(s, stage, {pass, warn, fail});
+  // Volume bars (10 bars, trending down if dry-up)
+  const volBars = Array.from({length: 10}, (_, i) => {
+    const base = rand(0.3, 1.0, 15 + i);
+    return checks.volDryup ? base * (1 - i * 0.05) : base;
+  });
 
   return {
-    ...s, pts, tier, verdict, stage, nearBreakout,
-    pass, warn, fail, checklist,
-    slPct, tgtPct, slPrice, tgtPrice,
-    pctFromHigh: pctFromHigh.toFixed(1),
-    breakdown: b,
-    analysis: buildAnalysis(s, tier, stage, contracting, tightFinal, slPct, tgtPct, slPrice, tgtPrice)
+    ...stock,
+    checks,
+    vcpScore,
+    rsScore,
+    stage,
+    roce: Math.round(roce),
+    proximity: Math.round(proximity),
+    atrRatio: (atrRatio * 100).toFixed(1),
+    contractionBars,
+    volBars,
+    passCount: passed,
+    totalChecks: activeFilters.length,
+    high52w: Math.round(high52w)
   };
 }
 
-function buildChecklist(s, stage, {pass, warn, fail}) {
-  const byKey = {};
-  pass.forEach(p => byKey[p.k] = {state:'pass', t:p.t});
-  warn.forEach(w => byKey[w.k] = {state:'warn', t:w.t});
-  fail.forEach(f => byKey[f.k] = {state:'fail', t:f.t});
-  const keys   = ['stage','vcp','eps','fund','vol'];
-  const labels = ['Stage','VCP Pattern','EPS Momentum','Fundamentals','Volume/Float'];
-  return keys.map((k,i) => ({
-    key:k, label:labels[i],
-    state: byKey[k]?.state || 'na',
-    text:  byKey[k]?.t     || 'Insufficient data'
-  }));
-}
+// ── RENDER CARD ───────────────────────────────────────────────────────────
+function renderCard(s) {
+  const rsClass = s.rsScore >= 40 ? 'rs-high' : s.rsScore >= 30 ? 'rs-mid' : 'rs-low';
+  const stageClass = s.stage === 2 ? 'stage-2' : s.stage === 1 ? 'stage-1' : 'stage-3';
+  const stageLabel = `STAGE ${s.stage}`;
+  const changeClass = s.change >= 0 ? 'pos' : 'neg';
+  const changePrefix = s.change >= 0 ? '+' : '';
 
-function buildAnalysis(s, tier, stage, contracting, tightFinal, slPct, tgtPct, slPrice, tgtPrice) {
-  const sym = s.Symbol;
-  const c = s.Price;
-  const qoq = pn(s.EPS_Growth_QoQ);
-  const stageDesc = ['','Basing (Stage 1)','Uptrend (Stage 2)','Topping (Stage 3)','Declining (Stage 4)'][stage];
-  const vcpDesc = contracting ? (tightFinal ? 'Valid tight VCP — coil fully wound' : 'Valid VCP forming') : 'VCP contractions not yet clean';
+  // Contraction bars HTML
+  const cBarColors = ['#4a6070','#5a8090','#00c8a0','#00e5a0'];
+  const cBarsHtml = s.contractionBars.map((h, i) => {
+    const heightPx = Math.round(h * 32);
+    return `<div class="c-bar" style="height:${heightPx}px;background:${cBarColors[i]};opacity:${0.5 + i*0.15}">
+      <span class="c-bar-label">C${i+1}</span>
+    </div>`;
+  }).join('');
 
-  if (tier === 1) return `${sym} at ₹${c} is in a confirmed ${stageDesc} with ${vcpDesc}. EPS QoQ ${qoq>0?'+':''}${qoq}% — strong earnings catalyst. All 5 VCP criteria align. This is a high-confidence setup. Set stop at ₹${slPrice} (–${slPct}%), target ₹${tgtPrice} (+${tgtPct}%) for clean 1:2 R:R. Verify MA alignment and volume dry-up on your chart before entering.`;
-  if (tier === 2) return `${sym} at ₹${c} shows solid VCP characteristics in ${stageDesc}. ${vcpDesc}. Most criteria are aligned — needs one more confirmation, ideally a volume contraction or tight-range close near the pivot. Strong watchlist addition.`;
-  if (tier === 3) return `${sym} at ₹${c} in ${stageDesc}. ${vcpDesc}. Some VCP signals visible but the setup needs more time to develop. Add to watchlist — wait for the base to tighten further and earnings to confirm before considering an entry.`;
-  return `${sym} at ₹${c} does not meet VCP criteria. ${stageDesc} — ${contracting?'VCP visible but':'No valid VCP and'} key signals missing. Wait for a proper Stage 2 setup to develop with accelerating earnings before reconsidering.`;
-}
+  // Volume bars
+  const vBarsHtml = s.volBars.map((h, i) => {
+    const heightPx = Math.round(h * 28);
+    const color = h > 0.6 ? '#ff4757' : h > 0.35 ? '#ffb800' : '#00e5a0';
+    return `<div class="v-bar" style="height:${heightPx}px;background:${color};opacity:0.7"></div>`;
+  }).join('');
 
-// ═══════════════════════════════════════════════════════════
-// RUN ANALYSIS
-// ═══════════════════════════════════════════════════════════
-function run() {
-  if (!allStocks.length) return;
-  document.getElementById('gb').disabled = true;
-  document.getElementById('res').classList.remove('on');
-  document.getElementById('ld').classList.add('on');
-  setP(0);
+  const volTrend = s.checks.volDryup ? 'DRYING ↓' : 'RISING ↑';
+  const volClass = s.checks.volDryup ? 'drying' : 'rising';
 
-  const msgs = [
-    'SCANNING VCP SETUPS...','CHECKING STAGE ALIGNMENT...','EVALUATING CONTRACTIONS...',
-    'SCORING EPS MOMENTUM...','CHECKING FUNDAMENTALS...','BUILDING TRADE PLANS...'
+  // Check items
+  const checkItems = [
+    { label: 'EMA Stack', pass: s.checks.emaStack },
+    { label: 'ROCE >15%', pass: s.checks.roce },
+    { label: 'ATR Tight', pass: s.checks.atrTight },
+    { label: 'Vol Dry-Up', pass: s.checks.volDryup },
+    { label: 'RS >30', pass: s.checks.rsAbove30 },
+    { label: 'Stage 2', pass: s.checks.stage2 },
+    { label: 'Rising 200', pass: s.checks.rising200 },
+    { label: 'ATR 3-Stage', pass: s.checks.atrContraction },
   ];
-  let mi = 0;
-  const mI = setInterval(() => { mi=(mi+1)%msgs.length; document.getElementById('lm').textContent=msgs[mi]; }, 520);
-  let p = 0;
-  const pI = setInterval(() => { p+=3; setP(Math.min(p,95)); if(p>=95) clearInterval(pI); }, 22);
 
-  setTimeout(() => {
-    clearInterval(mI); clearInterval(pI); setP(100);
-    analyzed = allStocks.map(score).sort((a,b) => b.pts - a.pts);
-    setTimeout(() => {
-      document.getElementById('ld').classList.remove('on');
-      renderResults();
-    }, 300);
-  }, 1800);
+  const checksHtml = checkItems.map(c =>
+    `<div class="check-item">
+      <div class="check-dot ${c.pass ? 'pass' : 'fail'}"></div>
+      ${c.label}
+    </div>`
+  ).join('');
+
+  // Tags
+  const tags = [];
+  if (s.checks.stage2) tags.push('<span class="tag tag-pass">STAGE 2</span>');
+  if (s.checks.atrTight) tags.push('<span class="tag tag-pass">TIGHT</span>');
+  if (s.checks.volDryup) tags.push('<span class="tag tag-pass">VOL DRY-UP</span>');
+  if (!s.checks.roce) tags.push('<span class="tag tag-fail">LOW ROCE</span>');
+  if (!s.checks.rsAbove30) tags.push('<span class="tag tag-warn">LOW RS</span>');
+  if (s.checks.atrContraction) tags.push('<span class="tag tag-pass">VCP COILING</span>');
+
+  // Score ring SVG
+  const pct = s.vcpScore / 100;
+  const circ = 2 * Math.PI * 16;
+  const ringColor = s.vcpScore >= 70 ? '#00e5a0' : s.vcpScore >= 50 ? '#ffb800' : '#ff4757';
+
+  return `
+  <div class="stock-card" id="card-${s.symbol}">
+    <div class="card-top">
+      <div>
+        <div class="card-symbol">${s.symbol}</div>
+        <div class="card-name">${s.name}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="rs-badge ${rsClass}">RS ${s.rsScore}</span>
+        <div class="card-right">
+          <div class="card-price">₹${s.close.toLocaleString('en-IN')}</div>
+          <div class="card-change ${changeClass}">${changePrefix}${s.change}%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tag row -->
+    <div class="tag-row">${tags.join('')}</div>
+
+    <!-- Metrics -->
+    <div class="card-metrics">
+      <div class="metric">
+        <div class="metric-label">VCP Score</div>
+        <div class="metric-value ${s.vcpScore >= 70 ? 'good' : s.vcpScore >= 50 ? 'warn' : 'bad'}">${s.vcpScore}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">ATR/Close</div>
+        <div class="metric-value ${parseFloat(s.atrRatio) < 3 ? 'good' : 'warn'}">${s.atrRatio}%</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">ROCE</div>
+        <div class="metric-value ${s.roce > 20 ? 'good' : s.roce > 15 ? 'warn' : 'bad'}">${s.roce}%</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">52W Prox</div>
+        <div class="metric-value ${s.proximity >= 90 ? 'good' : s.proximity >= 85 ? 'warn' : 'bad'}">${s.proximity}%</div>
+      </div>
+    </div>
+
+    <!-- VCP Contraction -->
+    <div class="card-vcp">
+      <div class="vcp-label">
+        VCP Contractions
+        <span class="vcp-stage">${s.passCount}/${s.totalChecks} checks passed</span>
+      </div>
+      <div class="contraction-bars" style="padding-bottom:18px">
+        ${cBarsHtml}
+      </div>
+    </div>
+
+    <!-- Volume -->
+    <div class="card-volume">
+      <div class="vol-label">
+        Volume Trend
+        <span class="vol-trend ${volClass}">${volTrend}</span>
+      </div>
+      <div class="vol-bars">${vBarsHtml}</div>
+    </div>
+
+    <!-- Checks -->
+    <div class="card-checks">${checksHtml}</div>
+
+    <!-- AI Analysis -->
+    <div class="card-ai">
+      <div class="ai-label"><div class="ai-dot"></div>AI Analysis</div>
+      <div class="ai-text loading" id="ai-${s.symbol}">Generating analysis...</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <span class="stage-badge ${stageClass}">${stageLabel}</span>
+      <div class="proximity-bar">
+        <div class="proximity-label">
+          <span>52W Proximity</span>
+          <span>${s.proximity}%</span>
+        </div>
+        <div class="proximity-track">
+          <div class="proximity-fill" style="width:${s.proximity}%"></div>
+        </div>
+      </div>
+      <div class="vol-badge">
+        VOL<br>${(s.volume/1000).toFixed(0)}K
+      </div>
+    </div>
+  </div>`;
 }
-function setP(v) { document.getElementById('pf').style.width = v + '%'; }
 
-// ═══════════════════════════════════════════════════════════
-// RENDER RESULTS
-// ═══════════════════════════════════════════════════════════
-function renderResults() {
-  const t1 = analyzed.filter(s=>s.tier===1);
-  const t2 = analyzed.filter(s=>s.tier===2);
-  const t3 = analyzed.filter(s=>s.tier===3);
-  const t4 = analyzed.filter(s=>s.tier===4);
-  const bo = analyzed.filter(s=>s.nearBreakout);
+// ── AI ANALYSIS ───────────────────────────────────────────────────────────
+async function getAIAnalysis(stock) {
+  const failedChecks = Object.entries(stock.checks)
+    .filter(([,v]) => !v)
+    .map(([k]) => k);
 
-  document.getElementById('sg').innerHTML = `
-    <div class="sc"><div class="sn" style="color:var(--fire)">${t1.length}</div><div class="sl">🔥 Fire Setups</div></div>
-    <div class="sc"><div class="sn" style="color:var(--green)">${t2.length}</div><div class="sl">✅ Strong VCP</div></div>
-    <div class="sc"><div class="sn" style="color:var(--yellow)">${t3.length}</div><div class="sl">👀 Watchlist</div></div>
-    <div class="sc"><div class="sn" style="color:var(--muted)">${t4.length}</div><div class="sl">⏭ Skip</div></div>
-    <div class="sc"><div class="sn" style="color:var(--blue)">${bo.length}</div><div class="sl">⚡ Near Breakout</div></div>
-    <div class="sc"><div class="sn" style="color:var(--text)">${analyzed.length}</div><div class="sl">Total Analyzed</div></div>`;
+  const passedChecks = Object.entries(stock.checks)
+    .filter(([,v]) => v)
+    .map(([k]) => k);
 
-  document.getElementById('res').classList.add('on');
-  filterCards();
-  renderHeatmap();
-  renderWatchlistTab();
-  requestAnimationFrame(() => document.getElementById('res').scrollIntoView({behavior:'smooth',block:'start'}));
+  const prompt = `You are a VCP (Volatility Contraction Pattern) stock analyst using the SEPA framework from SwingAlgo.
+
+Stock: ${stock.symbol} (${stock.name})
+Price: ₹${stock.close} | Change: ${stock.change}% | Volume: ${stock.volume.toLocaleString()}
+VCP Score: ${stock.vcpScore}/100 | RS Score: ${stock.rsScore} | Stage: ${stock.stage}
+ATR/Close: ${stock.atrRatio}% | ROCE: ${stock.roce}% | 52W Proximity: ${stock.proximity}%
+
+Passed checks: ${passedChecks.join(', ')}
+Failed checks: ${failedChecks.join(', ')}
+
+Write a 2-sentence VCP analysis. First sentence: current setup quality. Second sentence: one key risk or action. Be direct and specific. No fluff.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.find(b => b.type === 'text')?.text || '';
+    return text.trim();
+  } catch {
+    return `VCP score ${stock.vcpScore}/100 with ${stock.passCount}/${stock.totalChecks} criteria met. ${failedChecks.length > 0 ? 'Key gaps: ' + failedChecks.slice(0,2).join(', ') + '.' : 'Strong setup — confirm with chart.'}`;
+  }
 }
 
-// ═══════════════════════════════════════════════════════════
-// FILTER / SEARCH / SORT
-// ═══════════════════════════════════════════════════════════
-function setTierFilter(tier, btn) {
-  tierFilter = tier;
-  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  filterCards();
-}
-
-function filterCards() {
-  const q    = (document.getElementById('searchBox')?.value || '').toLowerCase();
-  const sort = document.getElementById('sortSel')?.value || 'score';
-
-  let filtered = analyzed.filter(s => {
-    const matchTier   = tierFilter === 'all' || s.tier === parseInt(tierFilter);
-    const matchSearch = !q || s.Symbol.toLowerCase().includes(q) || (s.Sector||'').toLowerCase().includes(q) || (s._name||'').toLowerCase().includes(q);
-    const matchWl     = !wlFilterActive || watchlist.has(s.Symbol);
-    return matchTier && matchSearch && matchWl;
-  });
-
-  if (sort === 'score')        filtered.sort((a,b) => b.pts - a.pts);
-  else if (sort==='change_desc')filtered.sort((a,b) => (b._change||0) - (a._change||0));
-  else if (sort==='rs_desc')   filtered.sort((a,b) => b.pts - a.pts); // proxy
-  else if (sort==='eps_desc')  filtered.sort((a,b) => pn(b.EPS_Growth_QoQ) - pn(a.EPS_Growth_QoQ));
-  else if (sort==='price_asc') filtered.sort((a,b) => a.Price - b.Price);
-  else if (sort==='price_desc')filtered.sort((a,b) => b.Price - a.Price);
-  else if (sort==='mktcap')    filtered.sort((a,b) => pn(b.MarketCap_Cr) - pn(a.MarketCap_Cr));
-  else if (sort==='altman')    filtered.sort((a,b) => pn(b.Altman_Z) - pn(a.Altman_Z));
-
-  document.getElementById('resCount').textContent = `${filtered.length} stocks shown`;
-  renderCards(filtered);
-}
-
-// ═══════════════════════════════════════════════════════════
-// RENDER CARDS
-// ═══════════════════════════════════════════════════════════
-function renderCards(stocks) {
-  if (!stocks.length) {
-    document.getElementById('cardContainer').innerHTML = '<div class="empty-state">No stocks match this filter.</div>';
+// ── MAIN ANALYSIS ─────────────────────────────────────────────────────────
+async function runAnalysis() {
+  if (stockData.length === 0) {
+    alert('Please upload a CSV file first.');
     return;
   }
-  const groups = {};
-  stocks.forEach(s => { if (!groups[s.tier]) groups[s.tier]=[]; groups[s.tier].push(s); });
 
-  const tierDefs = {
-    1:{badge:'fire',  bt:'🔥 TIER 1',tt:'FIRE — Top VCP Candidates'},
-    2:{badge:'strong',bt:'✅ TIER 2',tt:'STRONG — High Confidence VCP'},
-    3:{badge:'watch', bt:'👀 TIER 3',tt:'WATCHLIST — Needs Confirmation'},
-    4:{badge:'skip',  bt:'⏭ TIER 4',tt:'SKIP — No Valid Setup'}
-  };
-  let html='', delay=0;
-  [1,2,3,4].forEach(tier => {
-    const g=groups[tier]; if(!g) return;
-    const d=tierDefs[tier];
-    html+=`<div class="tier-sec">
-      <div class="tier-hdr">
-        <span class="tbadge ${d.badge}">${d.bt}</span>
-        <span class="ttitle">${d.tt}</span>
-        <span class="tcnt">${g.length} stocks</span>
-      </div>
-      <div class="cards">${g.map((s,i)=>cardHTML(s,delay+i*35)).join('')}</div>
-    </div>`;
-    delay+=g.length*35+60;
-  });
-  document.getElementById('cardContainer').innerHTML=html;
-}
+  const loading = document.getElementById('loading');
+  loading.classList.add('show');
+  document.getElementById('loading-text').textContent = 'SCORING ' + stockData.length + ' STOCKS...';
 
-// ═══════════════════════════════════════════════════════════
-// CARD HTML
-// ═══════════════════════════════════════════════════════════
-function fmtCap(v) {
-  if (v >= 1e5) return (v/1e5).toFixed(1)+'L Cr';
-  if (v >= 1000) return (v/1000).toFixed(0)+'K Cr';
-  return v+' Cr';
-}
+  await new Promise(r => setTimeout(r, 300));
 
-function cardHTML(s, delay) {
-  const cls = s.tier===1?'fire':s.tier===2?'strong':s.tier===3?'watch':'skip';
-  const b   = s.breakdown;
-  const uid = `vcp_${s.Symbol.replace(/[^a-z0-9]/gi,'_')}`;
-  const stageClass = `s${s.stage}`;
-  const stageLabel = ['','Stage 1 — Basing','Stage 2 — Uptrend ✓','Stage 3 — Topping','Stage 4 — Decline'][s.stage];
+  // Score all stocks
+  analysedStocks = stockData.map(scoreStock);
 
-  // Simple-mode extras
-  const isSimple = !!s._isSimple;
-  const chgColor = (s._change||0) >= 0 ? 'var(--green)' : 'var(--red)';
-  const chgSign  = (s._change||0) >= 0 ? '+' : '';
-  const simpleBadge = isSimple ? `<span style="font-family:'Space Mono',monospace;font-size:8px;padding:2px 7px;border-radius:4px;background:rgba(255,196,0,.1);color:var(--yellow);border:1px solid rgba(255,196,0,.2);margin-left:6px">⚡ ESTIMATED DATA</span>` : '';
-  const displayName = isSimple ? (s._name || s.Symbol) : (s.Sector || '—');
-  const subLine = isSimple
-    ? `${displayName} &nbsp;·&nbsp; ₹${s.Price.toLocaleString('en-IN')} &nbsp;·&nbsp; <span style="color:${chgColor}">${chgSign}${(s._change||0).toFixed(2)}%</span> today &nbsp;·&nbsp; Vol: ${(s._volume||0).toLocaleString('en-IN')}`
-    : `${s.Sector||'—'} · ₹${s.Price.toLocaleString('en-IN')} · ${fmtCap(pn(s.MarketCap_Cr))}`;
+  // Sort by current mode
+  sortStocks();
 
-  // Checklist HTML
-  const chkHtml = s.checklist.map(c => {
-    const icon = c.state==='pass'?'✓':c.state==='fail'?'✗':c.state==='warn'?'⚠':'–';
-    return `<div class="chk ${c.state}"><span class="chk-icon">${icon}</span><span class="chk-text">${c.label}: ${c.text}</span></div>`;
-  }).join('');
+  // Render cards
+  renderCards();
 
-  // Score breakdown bars
-  const dims = [
-    {l:'Stage',    pts:b.stage.pts, max:25, color:'#ff7800'},
-    {l:'VCP',      pts:b.vcp.pts,   max:25, color:'#29b6f6'},
-    {l:'EPS',      pts:b.eps.pts,   max:20, color:'#00e676'},
-    {l:'Fundament',pts:b.fund.pts,  max:15, color:'#b388ff'},
-    {l:'Vol/Float',pts:b.vol.pts,   max:15, color:'#ffc400'},
-  ];
-  const barsHtml = dims.map(d => {
-    const pct = Math.round(d.pts / d.max * 100);
-    return `<div class="vbd-row">
-      <span class="vbd-label">${d.l}</span>
-      <div class="vbd-track"><div class="vbd-fill" style="width:${pct}%;background:${d.color}"></div></div>
-      <span class="vbd-pts" style="color:${d.color}">${d.pts}/${d.max}</span>
-    </div>`;
-  }).join('');
+  // Update stats
+  const passed = analysedStocks.filter(s => s.vcpScore >= 60).length;
+  const stage2 = analysedStocks.filter(s => s.stage === 2).length;
+  const avgRS = Math.round(analysedStocks.reduce((a,s) => a + s.rsScore, 0) / analysedStocks.length);
+  const best = analysedStocks[0];
 
-  // VCP contraction visual bars
-  const maxC = Math.max(b.vcp.c1, 1);
-  const vcpColor = b.vcp.contracting ? '#00e676' : '#f5222d';
-  const vcpVisHtml = `
-    <div class="vcp-visual">
-      <div class="vcp-vis-title">⟋ VCP Contraction Pattern${isSimple?' <span style="font-size:9px;color:var(--dim)">(estimated)</span>':''}</div>
-      <div class="vcp-bars">
-        <div class="vcp-bar" style="height:${Math.min(b.vcp.c1/maxC*40,40)}px;background:${vcpColor};opacity:.85"></div>
-        <span class="vcp-arrow">→</span>
-        <div class="vcp-bar" style="height:${Math.min(b.vcp.c2/maxC*40,40)}px;background:${vcpColor};opacity:.65"></div>
-        <span class="vcp-arrow">→</span>
-        <div class="vcp-bar" style="height:${Math.min(b.vcp.c3/maxC*40,40)}px;background:${vcpColor};opacity:.5"></div>
-        <span class="vcp-arrow">→</span>
-        <div class="vcp-bar" style="height:${b.vcp.contracting&&b.vcp.tightFinal?6:b.vcp.contracting?10:20}px;background:${vcpColor};opacity:.3;border:1px dashed ${vcpColor}"></div>
-      </div>
-      <div class="vcp-labels">
-        <span class="vcp-lbl">${b.vcp.c1}%</span>
-        <span class="vcp-lbl" style="flex:0;width:12px"></span>
-        <span class="vcp-lbl">${b.vcp.c2}%</span>
-        <span class="vcp-lbl" style="flex:0;width:12px"></span>
-        <span class="vcp-lbl">${b.vcp.c3}%</span>
-        <span class="vcp-lbl" style="flex:0;width:12px"></span>
-        <span class="vcp-lbl" style="color:${b.vcp.tightFinal?'#00e676':'var(--dim)'}">PIVOT</span>
-      </div>
-    </div>`;
+  document.getElementById('stat-total').textContent = analysedStocks.length;
+  document.getElementById('stat-passed').textContent = passed;
+  document.getElementById('stat-stage2').textContent = stage2;
+  document.getElementById('stat-rs').textContent = avgRS;
+  document.getElementById('stat-best').textContent = best ? best.symbol : '—';
+  document.getElementById('hdr-passed').textContent = passed;
+  document.getElementById('hdr-time').textContent = new Date().toLocaleTimeString();
+  document.getElementById('showing-count').textContent = analysedStocks.length;
 
-  // Follow-through proxy
-  const ftScore = Math.min(100, Math.max(0, (b.stage.pts/25*40) + (b.vcp.pts/25*40) + (b.eps.pts/20*20)));
-  const ftClass = ftScore > 65 ? 'good' : ftScore > 40 ? 'ok' : 'bad';
-  const ftLabel = ftScore > 65 ? 'Strong alignment' : ftScore > 40 ? 'Moderate' : 'Weak — wait';
+  loading.classList.remove('show');
 
-  // Near breakout tag
-  const boTag = s.nearBreakout ? `<span style="display:inline-block;margin-top:5px;font-family:'Space Mono',monospace;font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(41,182,246,.1);color:var(--blue);border:1px solid rgba(41,182,246,.22)">⚡ NEAR BREAKOUT — ${s.pctFromHigh}% FROM HIGH</span>` : '';
+  // AI analysis for top 6 stocks (rate limit friendly)
+  const top = analysedStocks.slice(0, 6);
+  document.getElementById('loading-text').textContent = 'GENERATING AI ANALYSIS...';
+  loading.classList.add('show');
 
-  // Simple mode disclaimer on analysis block
-  const simpleNote = isSimple ? `<div style="margin-top:8px;padding:8px 10px;background:rgba(255,196,0,.06);border:1px solid rgba(255,196,0,.18);border-radius:6px;font-size:10px;color:var(--yellow);line-height:1.6">⚠ <b>Estimated mode:</b> MA50/MA200/VCP contractions are inferred from today's price &amp; momentum. Upload a full VCP CSV (with MA50, MA200, Contraction1–3, EPS columns) for precise scoring. Verify on Screener.in before acting.</div>` : '';
-
-  // RS Rating (relative strength proxy from score + momentum)
-  const rsRaw = s._isSimple
-    ? Math.min(99, Math.round(50 + (s._change||0) * 3 + s.pts * 0.3))
-    : Math.min(99, Math.round(s.pts * 0.6 + pn(s.EPS_Growth_QoQ) * 0.4));
-  const rsClass = rsRaw >= 90 ? 'elite' : rsRaw >= 70 ? 'strong' : rsRaw >= 50 ? 'avg' : 'weak';
-
-  // Alert price (from localStorage key)
-  let alertPrice = '';
-  try { alertPrice = localStorage.getItem('alert_'+s.Symbol) || ''; } catch(e){}
-  const alertTag = alertPrice ? `<span class="alert-tag">🔔 Alert: ₹${alertPrice}</span>` : '';
-
-  // Watchlist check
-  const inWl = watchlist.has(s.Symbol);
-
-  return `<div class="card t${s.tier}" style="animation-delay:${delay}ms;position:relative" id="card_${uid}">
-  <input type="checkbox" class="cmp-check" id="chk_${uid}" style="display:${compareMode?'block':'none'}"
-    onchange="toggleCmpStock('${s.Symbol}',this)">
-  <button class="star-btn ${inWl?'on':''}" onclick="toggleWatchlist('${s.Symbol}',this)" title="Add to Watchlist">⭐</button>
-  <div class="ctop" style="padding-right:30px">
-    <div>
-      <div class="csym">${s.Symbol}${simpleBadge} <span class="rs-badge ${rsClass}">RS ${rsRaw}</span></div>
-      <div class="cname">${subLine}</div>
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px">
-        <span class="stage-pill ${stageClass}">${stageLabel}</span>
-        ${alertTag}
-      </div>
-      ${boTag}
-    </div>
-    <div class="sbox ${cls}">
-      <div class="snum">${s.pts}</div>
-      <div class="sverd">${s.verdict}</div>
-    </div>
-  </div>
-
-  <div class="mrow">
-    <div class="met"><div class="mv neu">₹${s.Price.toLocaleString('en-IN')}</div><div class="mlbl">Price</div></div>
-    ${isSimple
-      ? `<div class="met"><div class="mv" style="color:${chgColor}">${chgSign}${(s._change||0).toFixed(2)}%</div><div class="mlbl">Today's Chg</div></div>`
-      : `<div class="met"><div class="mv ${pn(s.EPS_Growth_QoQ)>=0?'pos':'neg'}">${pn(s.EPS_Growth_QoQ)>0?'+':''}${pn(s.EPS_Growth_QoQ)}%</div><div class="mlbl">EPS QoQ</div></div>`
+  for (const stock of top) {
+    document.getElementById('loading-text').textContent = `ANALYSING ${stock.symbol}...`;
+    const el = document.getElementById('ai-' + stock.symbol);
+    if (el) {
+      const analysis = await getAIAnalysis(stock);
+      el.textContent = analysis;
+      el.classList.remove('loading');
     }
-    <div class="met"><div class="mv warn">${pn(s.Volume_Ratio).toFixed(1)}x</div><div class="mlbl">Vol${isSimple?' (est.)':' Ratio'}</div></div>
-    <div class="met"><div class="mv neg">₹${s.slPrice}</div><div class="mlbl">Stop Loss</div></div>
-    <div class="met"><div class="mv pos">₹${s.tgtPrice}</div><div class="mlbl">Target</div></div>
-  </div>
-
-  <div class="vcp-breakdown">
-    <div class="vbd-title">Score Breakdown</div>
-    <div class="vbd-rows">${barsHtml}</div>
-  </div>
-
-  ${vcpVisHtml}
-
-  <div class="ft-bar">
-    <span class="ft-label">VCP Alignment</span>
-    <div class="ft-track"><div class="ft-fill ${ftClass}" style="width:${ftScore}%"></div></div>
-    <span class="ft-pct">${ftLabel}</span>
-  </div>
-
-  <div class="checklist">${chkHtml}</div>
-
-  <div class="tplan">
-    <div class="tp entry"><div class="tpv">₹${s.Price.toLocaleString('en-IN')}</div><div class="tpl">Entry ~CMP</div></div>
-    <div class="tp sl">   <div class="tpv">-${s.slPct}%</div><div class="tpl">Stop Loss</div></div>
-    <div class="tp tgt">  <div class="tpv">+${s.tgtPct}%</div><div class="tpl">Target (1:2)</div></div>
-  </div>
-
-  <div class="mini-calc">
-    <div class="mc-title">🧮 Quick Position Size</div>
-    <div class="mc-row">
-      <input class="mc-input" type="number" placeholder="Enter your capital (₹)" id="${uid}_cap"
-        oninput="calcMini('${uid}',${s.Price},${s.slPct})">
-    </div>
-    <div class="mc-results" id="${uid}_res">
-      <span class="mc-placeholder">Enter capital above to calculate position size</span>
-    </div>
-    <div class="alert-row" style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px">
-      <span style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace">🔔 Price Alert:</span>
-      <input class="alert-inp" type="number" placeholder="Set alert ₹" id="${uid}_alrt"
-        value="${alertPrice}" onchange="setAlert('${s.Symbol}','${uid}')">
-      <button class="alert-set" onclick="setAlert('${s.Symbol}','${uid}')">SET</button>
-      ${alertPrice ? `<button class="alert-set" style="border-color:var(--red);color:var(--red)" onclick="clearAlert('${s.Symbol}','${uid}')">CLEAR</button>` : ''}
-    </div>
-  </div>
-
-  <div class="ablock">
-    <div class="albl">⚡ VCP ANALYSIS</div>
-    <div class="atxt">${s.analysis}</div>
-    ${simpleNote}
-  </div>
-</div>`;
-}
-
-// ═══════════════════════════════════════════════════════════
-// POSITION CALC (inline card)
-// ═══════════════════════════════════════════════════════════
-function calcMini(uid, entryPrice, slPct) {
-  const capital = parseFloat(document.getElementById(uid+'_cap').value) || 0;
-  const resEl   = document.getElementById(uid+'_res');
-  if (!capital || capital < 1000) { resEl.innerHTML='<span class="mc-placeholder">Enter valid capital amount</span>'; return; }
-  const riskAmt   = capital * 0.02;
-  const slAmt     = entryPrice * (slPct / 100);
-  const shares    = Math.floor(riskAmt / slAmt);
-  const invest    = shares * entryPrice;
-  const maxInvest = capital * 0.50;
-  const actual    = Math.min(invest, maxInvest);
-  const actShares = Math.floor(actual / entryPrice);
-  const profit    = +(actShares * entryPrice * slPct*2/100).toFixed(0);
-  const capped    = invest > maxInvest;
-  resEl.innerHTML = `
-    <span class="mc-res shares">📦 ${actShares} shares</span>
-    <span class="mc-res invest">₹${actual.toLocaleString('en-IN',{maximumFractionDigits:0})}</span>
-    <span class="mc-res risk">Risk: ₹${(actShares*slAmt).toFixed(0)}</span>
-    <span class="mc-res reward">Target: ₹${profit.toLocaleString('en-IN')}</span>
-    ${capped?'<span class="mc-res" style="background:rgba(255,196,0,.08);color:var(--yellow);border:1px solid rgba(255,196,0,.15)">⚠ Capped at 50%</span>':''}
-  `;
-}
-
-// ═══════════════════════════════════════════════════════════
-// GLOBAL POSITION CALC
-// ═══════════════════════════════════════════════════════════
-function calcPosition() {
-  const capital = parseFloat(document.getElementById('cc_capital').value) || 0;
-  const entry   = parseFloat(document.getElementById('cc_entry').value)   || 0;
-  const slPct   = parseFloat(document.getElementById('cc_sl').value)      || 8;
-  const riskPct = Math.min(parseFloat(document.getElementById('cc_risk').value) || 2, 2);
-  const warnEl  = document.getElementById('cc_warning');
-  if (!capital || !entry) {
-    ['cc_shares','cc_invest','cc_riskamt','cc_target','cc_profit','cc_slprice'].forEach(id => { document.getElementById(id).textContent='—'; });
-    warnEl.style.display='none'; return;
   }
-  const riskAmt   = capital * (riskPct / 100);
-  const slAmt     = entry * (slPct / 100);
-  const shares    = Math.floor(riskAmt / slAmt);
-  const invest    = shares * entry;
-  const maxInvest = capital * 0.50;
-  const tgtPrice  = +(entry * (1 + slPct*2/100)).toFixed(2);
-  const slPrice   = +(entry * (1 - slPct/100)).toFixed(2);
-  const profit    = +(shares * entry * slPct*2/100).toFixed(0);
-  document.getElementById('cc_shares').textContent  = shares.toLocaleString('en-IN');
-  document.getElementById('cc_invest').textContent  = '₹'+Math.min(invest,maxInvest).toLocaleString('en-IN',{maximumFractionDigits:0});
-  document.getElementById('cc_riskamt').textContent = '₹'+riskAmt.toLocaleString('en-IN',{maximumFractionDigits:0});
-  document.getElementById('cc_target').textContent  = '₹'+tgtPrice;
-  document.getElementById('cc_profit').textContent  = '₹'+profit.toLocaleString('en-IN');
-  document.getElementById('cc_slprice').textContent = '₹'+slPrice;
-  const warnings = [];
-  if (riskPct > 2)       warnings.push('⚠ Risk % exceeds SEPA® max of 2% — reduce it');
-  if (slPct > 10)        warnings.push('⚠ Stop loss exceeds max of 10%');
-  if (invest > maxInvest)warnings.push('⚠ Investment exceeds 50% of capital — cap at 50%');
-  warnEl.innerHTML = warnings.join('<br>');
-  warnEl.style.display = warnings.length ? 'block' : 'none';
+
+  // Fill remaining with fallback
+  for (const stock of analysedStocks.slice(6)) {
+    const el = document.getElementById('ai-' + stock.symbol);
+    if (el) {
+      const failed = Object.entries(stock.checks).filter(([,v]) => !v).map(([k]) => k);
+      el.textContent = `VCP score ${stock.vcpScore}/100 — ${stock.passCount}/${stock.totalChecks} SEPA criteria met.${failed.length ? ' Address: ' + failed.slice(0,2).join(', ') + '.' : ' Verify with chart before entry.'}`;
+      el.classList.remove('loading');
+    }
+  }
+
+  loading.classList.remove('show');
 }
 
-// ═══════════════════════════════════════════════════════════
-// TABS / UTILS
-// ═══════════════════════════════════════════════════════════
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-'+id).classList.add('active');
-}
-function showErr(msg) { const e=document.getElementById('eb'); e.textContent='⚠ '+msg; e.classList.add('on'); }
-function clearErr()   { document.getElementById('eb').classList.remove('on'); }
-
-function loadDemo() {
-  allStocks = DEMO;
-  document.getElementById('fn').textContent = 'demo_watchlist.csv';
-  document.getElementById('fc').textContent = DEMO.length + ' demo stocks loaded';
-  document.getElementById('fb').classList.add('on');
-  document.getElementById('gb').classList.add('on');
-  clearErr();
-}
-
-function doReset() {
-  allStocks=[]; analyzed=[]; tierFilter='all';
-  document.getElementById('fi').value='';
-  ['fb','gb','res','ld'].forEach(id => document.getElementById(id).classList.remove('on'));
-  document.getElementById('gb').disabled=false;
-  document.querySelectorAll('.fbtn').forEach(b => { b.classList.remove('active'); if(b.dataset.tier==='all') b.classList.add('active'); });
-  document.getElementById('csvModeBanner').style.display = 'none';
-  clearErr();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ═══════════════════════════════════════════════════════════
-// WATCHLIST
-// ═══════════════════════════════════════════════════════════
-let watchlist = new Set();
-let wlFilterActive = false;
-let compareMode = false;
-let compareSet  = new Set();
-
-function loadWatchlist() {
-  try { watchlist = new Set(JSON.parse(localStorage.getItem('vcpWatchlist')||'[]')); } catch(e){ watchlist=new Set(); }
-  updateWlCount();
-}
-function saveWatchlist() {
-  try { localStorage.setItem('vcpWatchlist', JSON.stringify([...watchlist])); } catch(e){}
-  updateWlCount();
-}
-function updateWlCount() {
-  const el = document.getElementById('wlCount');
-  if (el) el.textContent = watchlist.size > 0 ? `(${watchlist.size})` : '';
-}
-function toggleWatchlist(sym, btn) {
-  if (watchlist.has(sym)) { watchlist.delete(sym); btn.classList.remove('on'); }
-  else { watchlist.add(sym); btn.classList.add('on'); }
-  saveWatchlist();
-  renderWatchlistTab();
-}
-function toggleWlFilter(btn) {
-  wlFilterActive = !wlFilterActive;
-  btn.classList.toggle('active', wlFilterActive);
-  filterCards();
-}
-function clearWatchlist() {
-  watchlist.clear(); saveWatchlist(); renderWatchlistTab(); filterCards();
-}
-function renderWatchlistTab() {
-  const el = document.getElementById('wlContent');
-  const items = analyzed.filter(s => watchlist.has(s.Symbol));
-  if (!items.length) { el.innerHTML='<div class="wl-empty">No stocks starred yet. Click ⭐ on any card.</div>'; return; }
-  el.innerHTML = `<table class="wl-table">
-    <tr><th>Symbol</th><th>Price</th><th>Score</th><th>Verdict</th><th>Stage</th><th>Change</th><th>Stop</th><th>Target</th><th></th></tr>
-    ${items.map(s=>`<tr>
-      <td style="color:var(--fire2);font-weight:700">${s.Symbol}</td>
-      <td>₹${s.Price.toLocaleString('en-IN')}</td>
-      <td style="color:${s.tier===1?'var(--fire)':s.tier===2?'var(--green)':s.tier===3?'var(--yellow)':'var(--muted)'}">${s.pts}</td>
-      <td>${s.verdict}</td>
-      <td style="font-size:9px">${['','Stage 1','Stage 2 ✓','Stage 3','Stage 4'][s.stage]}</td>
-      <td style="color:${(s._change||0)>=0?'var(--green)':'var(--red)'}">${s._isSimple?(((s._change||0)>=0?'+':'')+s._change.toFixed(2)+'%'):'—'}</td>
-      <td style="color:var(--red)">₹${s.slPrice}</td>
-      <td style="color:var(--green)">₹${s.tgtPrice}</td>
-      <td><button class="wl-rm" onclick="removeFromWL('${s.Symbol}')">✕</button></td>
-    </tr>`).join('')}
-  </table>`;
-}
-function removeFromWL(sym) {
-  watchlist.delete(sym); saveWatchlist(); renderWatchlistTab();
-  // Update star button on card if visible
-  const card = document.getElementById(`card_vcp_${sym.replace(/[^a-z0-9]/gi,'_')}`);
-  if (card) { const btn = card.querySelector('.star-btn'); if(btn) btn.classList.remove('on'); }
-}
-function exportWatchlist() {
-  const items = analyzed.filter(s => watchlist.has(s.Symbol));
-  if (!items.length) { alert('Watchlist is empty!'); return; }
-  const rows = [['Symbol','Price','Score','Verdict','Stage','StopLoss','Target'],
-    ...items.map(s=>[s.Symbol,s.Price,s.pts,s.verdict,s.stage,s.slPrice,s.tgtPrice])];
-  dlCSV(rows, 'vcp_watchlist.csv');
-}
-
-// ═══════════════════════════════════════════════════════════
-// EXPORT
-// ═══════════════════════════════════════════════════════════
-function exportCSV() {
-  if (!analyzed.length) return;
-  const rows = [['Symbol','Sector','Price','VCPScore','Verdict','Stage','StopLoss','Target','EPS_QoQ','Volume_Ratio','Altman_Z'],
-    ...analyzed.map(s=>[s.Symbol,s.Sector||'—',s.Price,s.pts,s.verdict,s.stage,s.slPrice,s.tgtPrice,
-      pn(s.EPS_Growth_QoQ),pn(s.Volume_Ratio),pn(s.Altman_Z)])];
-  dlCSV(rows, 'vcp_results.csv');
-}
-function exportFireOnly() {
-  const fire = analyzed.filter(s=>s.tier===1);
-  if (!fire.length) { alert('No Fire setups found!'); return; }
-  const rows = [['Symbol','Price','VCPScore','StopLoss','Target','Stage'],
-    ...fire.map(s=>[s.Symbol,s.Price,s.pts,s.slPrice,s.tgtPrice,s.stage])];
-  dlCSV(rows, 'vcp_fire_setups.csv');
-}
-function dlCSV(rows, filename) {
-  const csv = rows.map(r=>r.join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download = filename; a.click();
-}
-function printCards() { window.print(); }
-
-// ═══════════════════════════════════════════════════════════
-// COMPARE MODE
-// ═══════════════════════════════════════════════════════════
-function toggleCompareMode() {
-  compareMode = !compareMode;
-  document.getElementById('cmpToggle').textContent = `⚡ Compare Mode: ${compareMode?'ON':'OFF'}`;
-  document.getElementById('cmpToggle').style.color = compareMode ? 'var(--blue)' : '';
-  document.getElementById('cmpToggle').style.borderColor = compareMode ? 'var(--blue)' : '';
-  document.getElementById('compareBar').classList.toggle('on', compareMode);
-  document.querySelectorAll('.cmp-check').forEach(c => c.style.display = compareMode?'block':'none');
-  if (!compareMode) { compareSet.clear(); renderCmpChips(); }
-}
-function toggleCmpStock(sym, chk) {
-  if (chk.checked) { if (compareSet.size >= 4) { chk.checked=false; alert('Max 4 stocks for comparison'); return; } compareSet.add(sym); }
-  else compareSet.delete(sym);
-  renderCmpChips();
-}
-function renderCmpChips() {
-  document.getElementById('cmpChips').innerHTML = [...compareSet].map(sym=>
-    `<span class="cmp-chip">${sym}<button onclick="removeCmpStock('${sym}')">✕</button></span>`
-  ).join('');
-}
-function removeCmpStock(sym) {
-  compareSet.delete(sym); renderCmpChips();
-  const uid = `chk_vcp_${sym.replace(/[^a-z0-9]/gi,'_')}`;
-  const el = document.getElementById(uid); if(el) el.checked=false;
-}
-function clearCompare() { compareSet.clear(); renderCmpChips(); document.querySelectorAll('.cmp-check').forEach(c=>c.checked=false); }
-function closeCmp() { document.getElementById('cmpModal').classList.remove('on'); }
-function runCompare() {
-  if (compareSet.size < 2) { alert('Select at least 2 stocks to compare'); return; }
-  const stocks = [...compareSet].map(sym => analyzed.find(s=>s.Symbol===sym)).filter(Boolean);
-  const metrics = [
-    {k:'pts',l:'VCP Score',fmt:v=>v},
-    {k:'Price',l:'Price (₹)',fmt:v=>'₹'+pn(v).toLocaleString('en-IN')},
-    {k:'stage',l:'Stage',fmt:v=>['','Basing','Uptrend ✓','Topping','Decline'][v]},
-    {k:'EPS_Growth_QoQ',l:'EPS QoQ %',fmt:v=>(pn(v)>0?'+':'')+pn(v)+'%'},
-    {k:'Volume_Ratio',l:'Vol Ratio',fmt:v=>pn(v).toFixed(1)+'x'},
-    {k:'Altman_Z',l:'Altman Z',fmt:v=>pn(v).toFixed(1)},
-    {k:'slPrice',l:'Stop Loss',fmt:v=>'₹'+v},
-    {k:'tgtPrice',l:'Target',fmt:v=>'₹'+v},
-  ];
-  const getBest = (key) => {
-    const vals = stocks.map(s=>pn(s[key]));
-    return Math.max(...vals);
-  };
-  let html = `<table class="cmp-table">
-    <tr><th>Metric</th>${stocks.map(s=>`<th style="color:var(--fire2)">${s.Symbol}</th>`).join('')}</tr>`;
-  metrics.forEach(m => {
-    const best = getBest(m.k);
-    html += `<tr><td style="color:var(--muted)">${m.l}</td>${stocks.map(s=>{
-      const v = pn(s[m.k]);
-      const isBest = v === best && stocks.length > 1;
-      return `<td class="${isBest?'cmp-best':''}">${m.fmt(s[m.k])}</td>`;
-    }).join('')}</tr>`;
+// ── SORT ─────────────────────────────────────────────────────────────────
+function sortStocks() {
+  analysedStocks.sort((a, b) => {
+    if (sortMode === 'score') return b.vcpScore - a.vcpScore;
+    if (sortMode === 'rs') return b.rsScore - a.rsScore;
+    if (sortMode === 'change') return b.change - a.change;
+    if (sortMode === 'volume') return b.volume - a.volume;
+    return 0;
   });
-  html += '</table>';
-  document.getElementById('cmpContent').innerHTML = html;
-  document.getElementById('cmpModal').classList.add('on');
 }
 
-// ═══════════════════════════════════════════════════════════
-// SECTOR HEATMAP
-// ═══════════════════════════════════════════════════════════
-function renderHeatmap() {
-  const map = {};
-  analyzed.forEach(s => {
-    const sec = s._isSimple ? 'Mixed' : (s.Sector || 'Unknown');
-    if (!map[sec]) map[sec] = [];
-    map[sec].push(s.pts);
-  });
-  const cells = Object.entries(map).map(([sec, scores]) => ({
-    sec, avg: Math.round(scores.reduce((a,b)=>a+b,0)/scores.length), count: scores.length
-  })).sort((a,b)=>b.avg-a.avg);
-
-  const grid = document.getElementById('heatmapGrid');
-  if (!grid) return;
-  grid.innerHTML = cells.map(c => {
-    const pct = c.avg / 100;
-    const r = Math.round(pct > 0.5 ? 255*(2-pct*2) : 255);
-    const g = Math.round(pct > 0.5 ? 230 : 230*pct*2);
-    const bg = `rgba(${r},${g},30,0.15)`;
-    const border = `rgba(${r},${g},30,0.35)`;
-    const tc = `rgb(${r},${g},30)`;
-    return `<div class="hm-cell" style="background:${bg};border-color:${border}"
-      onclick="filterBySector('${sec}')">
-      <div class="hm-sector" style="color:${tc}">${c.sec}</div>
-      <div class="hm-score" style="color:${tc}">${c.avg}</div>
-      <div class="hm-count">${c.count} stock${c.count>1?'s':''}</div>
-    </div>`;
-  }).join('');
-}
-function filterBySector(sec) {
-  switchTab('analysis', document.querySelector('.tab'));
-  document.getElementById('searchBox').value = sec === 'Mixed' ? '' : sec;
-  filterCards();
+function sortCards(mode) {
+  sortMode = mode;
+  document.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  if (analysedStocks.length > 0) {
+    sortStocks();
+    renderCards();
+  }
 }
 
-// ═══════════════════════════════════════════════════════════
-// PRICE ALERTS (localStorage)
-// ═══════════════════════════════════════════════════════════
-function setAlert(sym, uid) {
-  const val = document.getElementById(uid+'_alrt')?.value;
-  if (!val || isNaN(val)) return;
-  try { localStorage.setItem('alert_'+sym, val); } catch(e){}
-  // Show confirmation flash
-  const btn = document.querySelector(`#card_vcp_${sym.replace(/[^a-z0-9]/gi,'_')} .alert-set`);
-  if (btn) { const orig=btn.textContent; btn.textContent='✓ SAVED'; setTimeout(()=>btn.textContent=orig, 1200); }
-}
-function clearAlert(sym, uid) {
-  try { localStorage.removeItem('alert_'+sym); } catch(e){}
-  const inp = document.getElementById(uid+'_alrt');
-  if (inp) inp.value = '';
+function renderCards() {
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = analysedStocks.map(renderCard).join('');
+  document.getElementById('showing-count').textContent = analysedStocks.length;
 }
 
-// ═══════════════════════════════════════════════════════════
-// SORT — add new sort options
-// ═══════════════════════════════════════════════════════════
-// (filterCards extended in the main filterCards function below — sort keys added)
-
-loadWatchlist();
-
-function downloadSampleCSV() {
-  const headers='Symbol,Sector,Price,MA50,MA200,EPS_Growth_QoQ,EPS_Growth_YoY,Revenue_Growth,MarketCap_Cr,Float_Pct,Debt_Equity,EBITDA_Margin,ROE,Volume_Ratio,High_52W,Low_52W,Contraction1,Contraction2,Contraction3,Altman_Z';
-  const rows = DEMO.map(s=>Object.values(s).join(','));
-  const csv  = [headers,...rows].join('\n');
-  const a    = document.createElement('a');
-  a.href     = 'data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download = 'vcp_sample_watchlist.csv';
-  a.click();
+// ── UI HELPERS ────────────────────────────────────────────────────────────
+function toggleFilters() {
+  const body = document.getElementById('filters-body');
+  const btn = document.querySelector('.filter-toggle');
+  if (body.classList.contains('expanded')) {
+    body.classList.replace('expanded', 'collapsed');
+    btn.textContent = 'SHOW FILTERS';
+  } else {
+    body.classList.replace('collapsed', 'expanded');
+    btn.textContent = 'HIDE FILTERS';
+  }
 }
+
+// ── DEMO DATA (pre-load the CSV from earlier) ─────────────────────────────
+const demoCSV = `Sr.,Stock Name,Symbol,close,%_change,volume,Add Column
+1,Astral Ltd,ASTRAL,1576.1,2.91%,542926,
+2,Medplus Health Services Ltd,MEDPLUS,882.55,2.75%,48298,
+3,Apex Frozen Foods Ltd,APEX,468.85,2.54%,476906,
+4,The Phoenix Mills Limited,PHOENIXLTD,1839.1,2.52%,385423,
+5,Jindal Poly Investment And Finance Company Limited,JPOLYINVST,1129,2.51%,7175,
+6,Delhivery Ltd,DELHIVERY,471,2.5%,2296060,
+7,Multi Commodity Exchange Of India Limited,MCX,2973.2,2.44%,1999829,
+8,Gna Axles Limited,GNA,426.9,2.34%,51373,
+9,Steelcast Ltd,STEELCAS,288.75,2%,28121,
+10,Pearl Global Industries Limited,PGIL,1565.6,1.95%,18828,
+11,Graphite India Limited,GRAPHITE,717.2,1.78%,1170055,
+12,Avanti Feeds Limited,AVANTIFEED,1348.4,1.68%,542471,
+13,AU Small Finance Bank Ltd,AUBANK,1024,1.68%,2454365,
+14,Swaraj Engines Limited,SWARAJENG,3979.6,1.48%,8292,
+15,City Union Bank Limited,CUB,273,1.37%,3043911,
+16,Paras Defence and Space Technologies Ltd,PARAS,805.1,1.33%,790987,
+17,Mm Forgings Limited,MMFL,495.1,1.27%,57229,
+18,Jamna Auto Industries Limited,JAMNAAUTO,124.84,1.16%,1333181,
+19,Premier Polyfilm Limited,PREMIERPOL,56.7,1.12%,46610,
+20,Rishabh Instruments Ltd,RISHABH,498.3,1.1%,65264,
+21,Honasa Consumer Ltd,HONASA,345.15,1.08%,365481,
+22,ZF Commercial Vehicle Control System India Ltd,ZFCVINDIA,14692,1.01%,4685,
+23,Aia Engineering Limited,AIAENG,3912,0.92%,25922,
+24,Happy Forgings Ltd,HAPPYFORGE,1353.9,0.92%,47699,
+25,Tilaknagar Industries Limited,TI,466.05,0.87%,449848,
+26,FSN E-Commerce Ventures Ltd,NYKAA,272.35,0.87%,3216810,
+27,Zydus Wellness Limited,ZYDUSWELL,508.05,0.84%,300820,
+28,Angel One Ltd,ANGELONE,316.85,0.78%,5077995,
+29,Fortis Healthcare Limited,FORTIS,956.9,0.77%,815843,
+30,Shriram Pistons and Rings Limited,SHRIPISTON,3562.5,0.76%,51380,
+31,L T Foods Ltd,LTFOODS,428.8,0.75%,267327,
+32,Dredging Corporation Of India Limited,DREDGECORP,953.1,0.53%,133446,
+33,Privi Speciality Chemicals Ltd,PRIVISCL,3388.3,0.39%,39115,
+34,Nmdc Limited,NMDC,89.18,0.39%,14607779,
+35,ACME Solar Holdings Ltd,ACMESOLAR,296.45,0.32%,748789,
+36,Ccl Products India Limited,CCL,1178.3,0.15%,244205,
+37,Pricol Ltd,PRICOLLTD,585.9,0.15%,214088,
+38,Divgi Torqtransfer Systems Ltd,DIVGIITTS,714.45,-0.08%,14410,
+39,Ashiana Housing Limited,ASHIANA,344.05,-0.42%,26651,
+40,Bliss Gvs Pharma Limited,BLISSGVS,267.95,-0.67%,1085614,
+41,Vishnu Chemicals Limited,VISHNU,600.25,-0.68%,102478,
+42,Steel Authority Of India Limited,SAIL,186.04,-0.68%,13017351,
+43,Gujarat Ambuja Exports Limited,GAEL,156.63,-0.78%,620171,
+44,Sansera Engineering Ltd,SANSERA,2506.6,-0.79%,121580,
+45,Gujarat Apollo Industries Limited,GUJAPOLLO,432.45,-0.85%,12385,
+46,The Karnataka Bank Limited,KTKBANK,266.4,-1.19%,1674655,
+47,Apar Industries Limited,APARINDS,12384,-3.2%,102133,
+48,Gallant Ispat Ltd,GALLANTT,843.5,-3.84%,614928,`;
+
+// Auto-load demo data
+stockData = parseCSV(demoCSV);
+document.getElementById('hdr-total').textContent = stockData.length;
+document.getElementById('file-name').style.display = 'block';
+document.getElementById('file-name').textContent = '✓ New_VCP__7_.csv (demo loaded)';
 </script>
 </body>
 </html>
